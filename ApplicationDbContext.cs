@@ -10,10 +10,11 @@ internal static class ApplicationDbContext
 
     public static SQLiteConnection db;
 
+
     public static List<Module> Users => SelectAll<Module>().ToList();
     static ApplicationDbContext()
     {
-        //File.Delete(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"DataBase\NuCharacter.db"));
+        //File.Delete(Path.Combine("D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\ConsoleApp1\\", @"consoleDb.db"));
 
     }
 
