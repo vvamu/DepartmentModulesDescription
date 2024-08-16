@@ -5,7 +5,7 @@ public static class TranslationHelper
     public static async Task<string> TranslateToRu(string str, GTranslatorAPI.Languages sourceLanguage = GTranslatorAPI.Languages.be, GTranslatorAPI.Languages targetLanguage = GTranslatorAPI.Languages.ru)
     {
         var translator = new GTranslatorAPI.GTranslatorAPIClient();
-        var result = await translator.TranslateAsync(sourceLanguage, targetLanguage, str);
+        var result = await translator.TranslateAsync(sourceLanguage, targetLanguage, str ?? " ");
         return result.TranslatedText;
     }
 

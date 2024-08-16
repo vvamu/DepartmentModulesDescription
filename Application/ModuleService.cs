@@ -1,14 +1,17 @@
 ﻿using ConsoleApp1.Models;
+using ConsoleApp1.Persistence;
+using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.InkML;
-
+using MethodTimer;
+using System.Reflection;
 namespace ConsoleApp1.Application;
 
 internal static class ModuleService
 {
     
-    public static void Create(Module module)
+    public static void Create(Models.Module module)
     {
-        var modules = ApplicationDbContext.SelectAll<Module>();
+        var modules = ApplicationDbContext.SelectAll<Models.Module>();
         module.DateLastUpdateFileString = System.IO.File.GetLastWriteTime(module.FullFilePath).ToString();
 
        
@@ -22,25 +25,18 @@ internal static class ModuleService
             if (File.Exists(newFullPath)) return;
         }
 
-
-        #region StopWatch
-        // var stopwatch = new System.Diagnostics.Stopwatch();
-        // stopwatch.Start();
-        //stopwatch.Stop();
-        //Console.WriteLine($"Время выполнения Equals: {stopwatch.Elapsed}");
-
-        //if (modules.Any(x => x.Compare(module))) return;
-        #endregion
+        //if (modules.Any(x => x.Compare(module))) return
         //var any = modules.FirstOrDefault(x=>x.FullFilePath == module.FullFilePath);
 
 
         ApplicationDbContext.Insert(module);
 
     }
-
+    //[Time] //Выво в консоль отладки
+    [Time]
     public static void PrintAllErrorDocsInDatabase()
     {
-        var items = ApplicationDbContext.SelectAll<Module>()
+        var items = ApplicationDbContext.SelectAll<Models.Module>()
             .Where(x => x.Name == "Отсутствует в файле" || string.IsNullOrEmpty(x.Name)
             || x.Speciality == "Отсутствует в файле" || string.IsNullOrEmpty(x.Speciality)
             || x.Description == "Отсутствует в файле" || string.IsNullOrEmpty(x.Description));
@@ -48,8 +44,6 @@ internal static class ModuleService
         {
             Console.WriteLine(item.ToString());
         }
+
     }
-
-
-
 }
