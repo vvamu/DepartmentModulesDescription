@@ -15,6 +15,9 @@ public class Module
     //[NotMapped]
     //public DateTime DateLastUpdateFile { get; set; }
 
+    [NotMapped]
+    public bool IsDocxConvertedByDoc { get; set; }
+
     public string FileName { get; set; }
     public string FullFilePath { get; set; } 
 
@@ -34,8 +37,12 @@ public class Module
         return Speciality == other.Speciality 
             &&  Name == other.Name 
             && DepartmentShortName == other.DepartmentShortName 
-            && Description == other.Description
-            && (DateLastUpdateFileString == other.DateLastUpdateFileString);
+            && Description == other.Description;
+    }
+
+    public bool IsDifferentDescriptionAndDateLastUpdate(Module other)
+    {
+        return Description != other.Description && DateLastUpdateFileString != other.DateLastUpdateFileString;
     }
 
     /*

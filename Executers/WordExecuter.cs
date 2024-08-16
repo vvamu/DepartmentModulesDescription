@@ -21,11 +21,17 @@ namespace ConsoleApp1.Helpers;
 
 internal static class WordExecuter
 {
+
+
     public static string _currentFileName = "";
     public static string _currentFolderName = "";
     public static string _targetDirectory = "";
     public static string _currentFullFilePath = "";
-    public static bool IsNeedToTranslate { get => _currentFolderName.Contains("БФ") ? true : false ; }
+    public static bool IsNeedToTranslate { get => _currentFolderName.Contains("БФ") ? true : false; }
+
+    //private static WordExecuter? instance; private WordExecuter() { }
+    //public static WordExecuter getInstance => instance ?? new WordExecuter();
+
 
     //
     public static async Task ProcessRootDirectoryToFindOtherFoldersWithFiles(string targetDirectory = "")
@@ -37,8 +43,8 @@ internal static class WordExecuter
         foreach (var folder in dir.GetDirectories())
         {
             var folderName = targetDirectory + "\\" + folder.Name;
-           
-            if(folderName.Contains("-Готово") || folderName.Contains("-Учебные планы")) {  continue; }
+
+            if (folderName.Contains("-Готово") || folderName.Contains("-Учебные планы")) { continue; }
             if (Directory.Exists(folderName))
             {
                 await WordExecuter.ProcessFilesByDirectory(folderName);
@@ -69,7 +75,7 @@ internal static class WordExecuter
         {
             filename = ConvertDocToDocx(filename);
         }
-        else if(!filename.Contains(".docx"))
+        else if (!filename.Contains(".docx"))
         {
             Console.WriteLine($"File with incorrect format in method 'HandleFile' - {filename}");
             return;
@@ -90,10 +96,10 @@ internal static class WordExecuter
             }
             using (var wDoc = DocumentFormat.OpenXml.Packaging.WordprocessingDocument.Open(filename, false))
             {
-                
+
                 var parts = wDoc.MainDocumentPart.Document.Descendants().FirstOrDefault();
                 if (parts != null)
-                    
+
                 {
                     foreach (var node in parts.ChildElements)
                     {
@@ -113,12 +119,29 @@ internal static class WordExecuter
                 }
             }
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             Console.WriteLine($"File with incorrect format in method 'HandleTablesByWordFile' - {filename} with error {ex.Message}");
             return;
         }
     }
+
+    //private static bool IsNeedConvertToDocs()
+    //{
+    //    var anyFoundModule = modules.FirstOrDefault(x => x.Equals(module));
+    //    if (anyFoundModule != null && anyFoundModule.IsDifferentDescriptionAndDateLastUpdate(module)) //If I found equals. Check if description and dateLastUpdate
+    //    {
+    //        ApplicationDbContext.Update(module);
+    //        return;
+    //    }
+    //    //if not exists equals. For new created files with .docx format just return because we will check 
+    //    if (module.FullFilePath.Contains(".docx"))
+    //    {
+    //        var newFullPath = module.FullFilePath.Replace(".docx", ".doc");
+    //        if (File.Exists(newFullPath)) return;
+    //    }
+    //    return true;
+    //}
 
     public static string ConvertDocToDocx(string docPath, string docxPath = "")
     {
@@ -126,9 +149,14 @@ internal static class WordExecuter
 
         document.LoadFromFile(docPath);
         if (string.IsNullOrEmpty(docxPath)) docxPath += docPath + "x";
-        
+
         document.SaveToFile(docxPath, Spire.Doc.FileFormat.Docx);
         return docxPath;
+    }
+
+    private static void RemoveAllDocsFormattedByDoc()
+    {
+
     }
 
 
@@ -143,14 +171,14 @@ internal static class WordExecuter
             {
                 module = ProcessRowTopDown(row);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 module = ProcessRowLeftRight(row);
             }
 
             if (module == null) continue;
             if (!string.IsNullOrEmpty(module.Description)) resultModule.Description = module.Description;
-            if (!string.IsNullOrEmpty(module.Name)) resultModule.Name = module.Name; 
+            if (!string.IsNullOrEmpty(module.Name)) resultModule.Name = module.Name;
             if (!string.IsNullOrEmpty(module.Speciality)) resultModule.Speciality = module.Speciality;
 
             if (IsNeedToTranslate) await TranslationHelper.TranslateToRu(module);
@@ -169,8 +197,8 @@ internal static class WordExecuter
             resultModule.Name = "Отсутствует в файле";
         if (string.IsNullOrEmpty(resultModule.Description))
             resultModule.Description = "Отсутствует в файле";
-        
-       
+
+
         resultModule.DepartmentShortName = _currentFolderName;
         resultModule.FileName = _currentFileName;
         resultModule.FullFilePath = _currentFullFilePath;
@@ -185,10 +213,10 @@ internal static class WordExecuter
         {
             var rowArray = row.Descendants<TableCell>().ToArray();
 
-            for (int i = 0; i < row.Descendants<TableCell>().Count() -1 ; i++)
+            for (int i = 0; i < row.Descendants<TableCell>().Count() - 1; i++)
             {
                 var rowCellDescr = rowArray[i].InnerText.ToLower().Replace(" ", "").Replace("-", "");
-                if (ModuleWordHelper.IsDescriptionRow(rowCellDescr) )
+                if (ModuleWordHelper.IsDescriptionRow(rowCellDescr))
                 {
                     module.Description = rowArray[i + 1].InnerText;
 
@@ -224,4 +252,6 @@ internal static class WordExecuter
         }
     }
 
+
+    
 }
