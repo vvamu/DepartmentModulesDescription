@@ -38,5 +38,18 @@ internal static class ModuleService
 
     }
 
+    public static void PrintAllErrorDocsInDatabase()
+    {
+        var items = ApplicationDbContext.SelectAll<Module>()
+            .Where(x => x.Name == "Отсутствует в файле" || string.IsNullOrEmpty(x.Name)
+            || x.Speciality == "Отсутствует в файле" || string.IsNullOrEmpty(x.Speciality)
+            || x.Description == "Отсутствует в файле" || string.IsNullOrEmpty(x.Description));
+        foreach (var item in items)
+        {
+            Console.WriteLine(item.ToString());
+        }
+    }
+
+
 
 }

@@ -15,7 +15,6 @@ using _context = ConsoleApp1.ApplicationDbContext;
 using ConsoleApp1.Application;
 
 
-
 using System;
 
 namespace ConsoleApp1.Helpers;
@@ -26,8 +25,7 @@ internal static class WordExecuter
     public static string _currentFolderName = "";
     public static string _targetDirectory = "";
     public static string _currentFullFilePath = "";
-
-    
+    public static bool IsNeedToTranslate { get => _currentFolderName.Contains("БФ") ? true : false ; }
 
     //
     public static async Task ProcessRootDirectoryToFindOtherFoldersWithFiles(string targetDirectory = "")
@@ -48,18 +46,6 @@ internal static class WordExecuter
 
         }
     }
-    public static void PrintAllErrorDocsInDatabase()
-    {
-        var items = _context.SelectAll<Module>()
-            .Where(x => x.Name == "Отсутствует в файле" || string.IsNullOrEmpty(x.Name)
-            || x.Speciality == "Отсутствует в файле" || string.IsNullOrEmpty(x.Speciality)
-            || x.Description == "Отсутствует в файле" || string.IsNullOrEmpty(x.Description));
-        foreach (var item in items)
-        {
-            Console.WriteLine(item.ToString());
-        }
-    }
-
     private static async Task ProcessFilesByDirectory(string targetDirectory)
     {
         targetDirectory = string.IsNullOrEmpty(targetDirectory) ? (string.IsNullOrEmpty(_targetDirectory) ? throw new Exception("Path for word file is not set") : _targetDirectory) : targetDirectory;
@@ -97,7 +83,7 @@ internal static class WordExecuter
 
         try
         {
-            if (filename.Contains("Психология управления"))
+            if (filename.Contains("Беларуская"))
             //if (filename.Contains("D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Каталог учебных дисцилин\\ЭТИГ\\Каталог учебных дисциплин.docx"))
             {
                 Console.Write("");
@@ -129,7 +115,7 @@ internal static class WordExecuter
         }
         catch (Exception ex) 
         {
-            Console.WriteLine($"File with incorrect format in method 'HandleTablesByWordFile' - {filename}");
+            Console.WriteLine($"File with incorrect format in method 'HandleTablesByWordFile' - {filename} with error {ex.Message}");
             return;
         }
     }
@@ -146,27 +132,28 @@ internal static class WordExecuter
     }
 
 
-    private static void ProcessTable(Table node)
+    private static async Task ProcessTable(Table node)
     {
         Module resultModule = new Module();
         foreach (var row in node.Descendants<TableRow>())
         {
             Module? module;
+            ///TODO
             try
             {
                 module = ProcessRowTopDown(row);
             }
             catch (Exception ex) 
             {
-                module = ProcessRowTopDown(row);
+                module = ProcessRowLeftRight(row);
             }
 
             if (module == null) continue;
             if (!string.IsNullOrEmpty(module.Description)) resultModule.Description = module.Description;
-            if (!string.IsNullOrEmpty(module.Name)) resultModule.Name = module.Name;
+            if (!string.IsNullOrEmpty(module.Name)) resultModule.Name = module.Name; 
             if (!string.IsNullOrEmpty(module.Speciality)) resultModule.Speciality = module.Speciality;
 
-
+            if (IsNeedToTranslate) await TranslationHelper.TranslateToRu(module);
 
             /*
 
@@ -194,33 +181,27 @@ internal static class WordExecuter
     {
         var module = new Module();
         var rowText = row.InnerText.ToLower().Replace(" ", "").Replace("-", "");
-        if (((rowText.Contains("код") || rowText.Contains("название")) && rowText.Contains("специальности")) ||
-            (rowText.Contains("название") && rowText.Contains("дисциплины")) ||
-            (rowText.Contains("краткое") && rowText.Contains("содержание"))
-        )
+        if (ModuleWordHelper.IsDescriptionRow(rowText) || ModuleWordHelper.IsNameRow(rowText) || ModuleWordHelper.IsSpecialityRow(rowText))
         {
-            
-
             var rowArray = row.Descendants<TableCell>().ToArray();
 
-            for (int i = 0; i < row.Descendants<TableCell>().Count(); i++)
+            for (int i = 0; i < row.Descendants<TableCell>().Count() -1 ; i++)
             {
                 var rowCellDescr = rowArray[i].InnerText.ToLower().Replace(" ", "").Replace("-", "");
-                if (rowCellDescr.Contains("кратк") && rowCellDescr.Contains("содерж") && i < rowArray.Count())
+                if (ModuleWordHelper.IsDescriptionRow(rowCellDescr) )
                 {
                     module.Description = rowArray[i + 1].InnerText;
 
                 }
-                else if (rowCellDescr.Contains("названи") && rowCellDescr.Contains("дисциплин") && i < rowArray.Count())
+                else if (ModuleWordHelper.IsNameRow(rowCellDescr))
                 {
                     module.Name = rowArray[i + 1].InnerText;
                 }
-                else if ((rowCellDescr.Contains("код") || rowCellDescr.Contains("назван")) && rowCellDescr.Contains("специальност") && i < rowArray.Count())
+                else if (ModuleWordHelper.IsSpecialityRow(rowCellDescr))
                 {
                     module.Speciality = rowArray[i + 1].InnerText;
-
                 }
-                else if (i == rowArray.Count() - 1){}
+                //else if (i == rowArray.Count() - 1){}
 
             }
             return module;
@@ -230,6 +211,11 @@ internal static class WordExecuter
 
     }
 
+    //TODO
+    private static Module ProcessRowLeftRight(TableRow row)
+    {
+        return new Module();
+    }
     private static void ProcessParagraph(Paragraph node, StringBuilder textBuilder)
     {
         foreach (var text in node.Descendants<Text>())
@@ -237,12 +223,5 @@ internal static class WordExecuter
             //textBuilder.Append('"' + text.InnerText + '"');
         }
     }
-  
 
-
-
-    //public static Module CreateModule()
-    //{
-
-    //}
 }
