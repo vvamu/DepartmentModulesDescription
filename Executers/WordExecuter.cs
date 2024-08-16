@@ -11,7 +11,7 @@ using ConsoleApp1.Models;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.InkML;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
-using _context = ConsoleApp1.ApplicationDbContext;
+using _context = ConsoleApp1.Persistence.ApplicationDbContext;
 using ConsoleApp1.Application;
 
 
