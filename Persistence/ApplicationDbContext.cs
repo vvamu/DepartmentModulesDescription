@@ -1,6 +1,8 @@
 ﻿using ConsoleApp1.Models;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Spreadsheet;
+using HarfBuzzSharp;
+using Spire.Doc.AI.Client;
 using SQLite;
 using System.Collections.ObjectModel;
 
@@ -18,6 +20,13 @@ internal static class ApplicationDbContext
         //File.Delete(Path.Combine("D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\ConsoleApp1\\", @"consoleDb.db"));
 
     }
+
+    //Илья
+    //public static List<T> GetTableAsList<T>() where T : new()
+    //{
+    //    Init();
+    //    return db.Table<T>().ToList();
+    //}
 
     public static void Init()
     {
