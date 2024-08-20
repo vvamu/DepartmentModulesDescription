@@ -9,8 +9,10 @@ internal class Program
 {
     static async Task Main(string[] args)
     {
-        WordExecuter._targetDirectory = "D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Каталог учебных дисцилин";
-        //WordExecuter.ProcessRootDirectoryToFindOtherFoldersWithFiles();
+        var path = "D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Каталог учебных дисцилин";
+        var wordExecuter = WordExecuter.getInstance(path);
+
+        WordExecuter.ProcessRootDirectoryToFindOtherFoldersWithFiles();
         ModuleService.PrintAllErrorDocsInDatabase();
 
         

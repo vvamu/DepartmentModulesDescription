@@ -33,11 +33,7 @@ public static class SettingsHelper
         return false;
     }
 
-    public static void RemoveAllDocsFormattedByDoc()
-    {
-        var modules = ApplicationDbContext.SelectAll<Models.Module>();
-        
-    }
+   
 
 
 
