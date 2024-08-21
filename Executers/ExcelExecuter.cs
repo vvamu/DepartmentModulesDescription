@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.VisualBasic;
 using OfficeOpenXml;
+using OfficeOpenXml.Drawing.Style.ThreeD;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 using System.Diagnostics;
@@ -52,28 +53,71 @@ internal static class ExcelExecuter
             using (var package = new ExcelPackage(file_path))
             {
                 var sheet = package.Workbook.Worksheets[0];
-                var cell = sheet.Cells.Where(x => x.Text
+                var description_title_cell = sheet.Cells.Where(x => x.Text
                 .Contains("Описание дисциплины"))
                     .FirstOrDefault();
+                var description_title_coll = description_title_cell.ToString().GetLetters();
+                var description_title_row = description_title_cell.ToString().GetDigits();
 
-                var coll = cell.ToString().GetLetters();
-                var row = cell.ToString().GetDigits();
+                var department_title_cell = sheet.Cells.Where(x => x.Text
+                .Contains("Учебная дисциплина закреплена за кафедрой"))
+                    .FirstOrDefault();
+                var department_title_coll = department_title_cell.ToString().GetLetters();
+                var department_title_row = department_title_cell.ToString().GetDigits();
+
 
                 //Console.WriteLine(sheet.Cells["A"+coll].Value);
-                int i = int.Parse(row) + 5;
-                while (!string.IsNullOrEmpty(sheet.Cells["A" + i].Value?.ToString()))
+                int i = int.Parse(description_title_row) + 5;
+                Module module_db;
+
+                while (!sheet.Cells["A" + i].Value?.ToString()
+                        .ToLower().Replace(" ", "")
+                        .Contains("Учебные практики".ToLower().Replace(" ", ""))
+                        ?? true)
                 {
+                    if (string.IsNullOrEmpty(sheet.Cells["A" + i].Value?.ToString())) goto End;
+
+                    var description_cell = sheet.Cells[description_title_coll + i];
+                    description_cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
                     string excel_module_name = sheet.Cells["A" + i].Value.ToString().ToLower().Replace(" ", "");
+                    string excel_department_name = sheet.Cells[department_title_coll + i].Value?.ToString().ToLower().Replace(" ", "");
+                    if (excel_department_name is null) goto End;
+                    
+                    var selected_modules = table.Where(m => m.DepartmentShortName.ToLower().Replace(" ", "").Contains(excel_department_name));
+                    if (selected_modules.Count() == 0) 
+                    {
+                        description_cell.Value = "Кафедра модуля отсутствует в базе.";
+                        description_cell.Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                        goto End;
+                    }
 
-                    Module module_db = table.Where(
-                        m => m.Name.ToLower().Replace(" ", "").Contains(excel_module_name)
-                        && m.Speciality.GetDigits().Contains(speciality_code)).FirstOrDefault()
-                        ?? 
-                        table.Where(m => excel_module_name.Contains(m.Name.ToLower().Replace(" ", ""))
-                        && m.Speciality.GetDigits().Contains(speciality_code)).FirstOrDefault();
+                    selected_modules = selected_modules.Where(m => m.Name.ToLower().Replace(" ", "").Contains(excel_module_name));
+                    if (selected_modules.Count() == 0)
+                    {
+                        description_cell.Value = "В базе нет дисциплины с таким названием.";
+                        description_cell.Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                        goto End;
+                    }
 
-                    sheet.Cells[coll + i].Value = module_db?.Description;
+                    //Проверить, может ли быть больше 1 записи в базе
+                    module_db = selected_modules.Where(m => m.Speciality.GetDigits().Contains(speciality_code)).FirstOrDefault();
+                    if (module_db is null)
+                    {
+                        description_cell.Value = "Дисциплина без специальности.";
+                        description_cell.Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                        goto End;
+                    }
+                    //module_db = table.Where(
+                    //    m => m.Name.ToLower().Replace(" ", "").Contains(excel_module_name)
+                    //    && m.Speciality.GetDigits().Contains(speciality_code)).FirstOrDefault()
+                    //    ??
+                    //    table.Where(m => excel_module_name.Contains(m.Name.ToLower().Replace(" ", ""))
+                    //    && m.Speciality.GetDigits().Contains(speciality_code)).FirstOrDefault();
 
+                    description_cell.Value = module_db?.Description;
+
+                    End:
                     i += 1;
                 }
 

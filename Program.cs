@@ -11,7 +11,7 @@ internal class Program
         try 
         {
             //ExcelExecuter.EditSpecialityDescriptions("6-05-0211-06 Example.xlsx");
-            //ExcelExecuter.EditDirSpecialities("D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин\\-Готово_TEST");
+            ExcelExecuter.EditDirSpecialities("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST");
 
             WordExecuter._targetDirectory = "D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин";
             WordExecuter.ProcessRootDirectoryToFindOtherFoldersWithFiles();
