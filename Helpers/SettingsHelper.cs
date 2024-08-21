@@ -4,7 +4,13 @@ namespace ConsoleApp1.Helpers;
 
 public static class SettingsHelper
 {
-   public static void SetGlobalPathToProject()
+    private static string _path;
+    public static string Path { get => _path ?? throw new Exception("Path is not set"); set { _path = value; } }
+    public static int CountRows => ApplicationDbContext.SelectAll<Models.Module>().Count();
+
+    public static int countUpdatedRows = 0;
+
+    public static void SetGlobalPathToProject()
     {
 
     }

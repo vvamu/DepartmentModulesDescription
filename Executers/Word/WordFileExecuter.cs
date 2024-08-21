@@ -45,10 +45,7 @@ public partial class WordExecuter
 
         public async Task HandleFile(string filename)
         {
-            if (filename.Contains("Биологические системы и методы в водоподготовке и очистке сточных вод"))
-            {
-                Console.Write("");
-            }
+            
             if (!filename.Contains(".docx") && filename.Contains(".doc"))
             {
                 filename = ConvertDocToDocx(filename);
@@ -67,7 +64,7 @@ public partial class WordExecuter
 
             try
             {
-                if (filename.Contains("Беларуская"))
+                if (filename.Contains("ТДиД"))
                 //if (filename.Contains("D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Каталог учебных дисцилин\\ЭТИГ\\Каталог учебных дисциплин.docx"))
                 {
                     Console.Write("");
@@ -91,7 +88,7 @@ public partial class WordExecuter
 
                             if (node is Table)
                             {
-                                ProcessTable((Table)node);
+                                await ProcessTable((Table)node);
                             }
                         }
                     }
@@ -135,6 +132,10 @@ public partial class WordExecuter
         private async Task ProcessTable(Table node)
         {
             Module resultModule = new Module();
+            resultModule.DepartmentShortName = FolderName;
+            resultModule.FileName = FileName;
+            resultModule.FullFilePath = FullFilePath;
+            resultModule.IsDocxConvertedByDoc = IsDocxConvertedByDoc;
             foreach (var row in node.Descendants<TableRow>())
             {
                 Module? module;
@@ -153,7 +154,8 @@ public partial class WordExecuter
                 if (!string.IsNullOrEmpty(module.Name)) resultModule.Name = module.Name;
                 if (!string.IsNullOrEmpty(module.Speciality)) resultModule.Speciality = module.Speciality;
 
-                if (this.IsNeedToTranslate) await TranslationHelper.TranslateToRu(module);
+                
+                    
 
                 /*
 
@@ -163,6 +165,11 @@ public partial class WordExecuter
                     }
                 */
             }
+            if (this.IsNeedToTranslate)
+            {
+                var module2 = await TranslationHelper.TranslateToRu(resultModule);
+                var stringfefef = "";
+            }
             if (string.IsNullOrEmpty(resultModule.Speciality))
                 resultModule.Speciality = "Отсутствует в файле";
             if (string.IsNullOrEmpty(resultModule.Name))
@@ -171,10 +178,7 @@ public partial class WordExecuter
                 resultModule.Description = "Отсутствует в файле";
 
 
-            resultModule.DepartmentShortName = FolderName;
-            resultModule.FileName = FileName;
-            resultModule.FullFilePath = FullFilePath;
-            resultModule.IsDocxConvertedByDoc = IsDocxConvertedByDoc;
+            
 
             ModuleService.Create(resultModule);
         }

@@ -16,9 +16,6 @@ namespace ConsoleApp1.Helpers;
 
 internal static class ExcelExecuter
 {
-    const string excelFile = "";
-    static string dir = "D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин\\-Готово";
-
     public static string GetDigits(this string str) 
     {
         return new string(str.ToCharArray().Where(c => char.IsDigit(c)).ToArray());
@@ -65,7 +62,7 @@ internal static class ExcelExecuter
                 {
                     string excel_module_name = sheet.Cells["A" + i].Value.ToString().ToLower().Replace(" ", "");
 
-                    Module module_db = table.Where(
+                    Module? module_db = table.Where(
                         m => m.Name.ToLower().Replace(" ", "").Contains(excel_module_name)
                         && m.Speciality.GetDigits().Contains(speciality_code)).FirstOrDefault()
                         ?? 

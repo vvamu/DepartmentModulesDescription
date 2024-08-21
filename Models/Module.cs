@@ -4,6 +4,7 @@ namespace ConsoleApp1.Models;
 
 public class Module
 {
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string DepartmentShortName { get; set; }
     public string Speciality { get; set; }
 
