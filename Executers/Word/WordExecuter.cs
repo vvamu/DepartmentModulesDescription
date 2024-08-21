@@ -17,11 +17,13 @@ public partial class WordExecuter
             ? (string.IsNullOrEmpty(_targetDirectory) ? throw new Exception("Path for word file is not set") : _targetDirectory) : targetDirectory;
 
         DirectoryInfo dir = new DirectoryInfo(targetDirectory);
+
         foreach (var folder in dir.GetDirectories())
         {
             var folderName = targetDirectory + "\\" + folder.Name;
 
             if (folderName.Contains("-Готово") || folderName.Contains("-Учебные планы")) { continue; }
+            
             if (Directory.Exists(folderName))
             {
                 //var folderd = new WordFolderExecuter();
@@ -35,6 +37,7 @@ public partial class WordExecuter
     {
         targetDirectory = string.IsNullOrEmpty(targetDirectory) ? (string.IsNullOrEmpty(_targetDirectory) ? throw new Exception("Path for word file is not set") : _targetDirectory) : targetDirectory;
         string[] fileEntries = Directory.GetFiles(targetDirectory);
+       
         foreach (string fileName in fileEntries)
         {
             var fileExecuter = new WordFileExecuter(fileName); // This should now find the WordFolderFileExecuter class
