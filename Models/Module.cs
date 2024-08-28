@@ -7,14 +7,14 @@ public class Module
 {
     [PrimaryKey]
     public Guid Id { get; set; } = Guid.NewGuid();
-    public string DepartmentShortName { get; set; }
-    public string Speciality { get; set; }
+    public string? DepartmentShortName { get; set; }
+    public string? Speciality { get; set; }
     
     public string LowerAndTrimSpeciality { get; set; }
 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
-    public string Description { get; set; } 
+    public string? Description { get; set; } 
 
     public string DateLastUpdateFileString {get;set;}
     [NotMapped]
