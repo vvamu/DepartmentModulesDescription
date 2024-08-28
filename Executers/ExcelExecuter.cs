@@ -17,9 +17,6 @@ namespace ConsoleApp1.Helpers;
 
 internal static class ExcelExecuter
 {
-    const string excelFile = "";
-    static string dir = "D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин\\-Готово";
-
     public static string GetDigits(this string str) 
     {
         return new string(str.ToCharArray().Where(c => char.IsDigit(c)).ToArray());
