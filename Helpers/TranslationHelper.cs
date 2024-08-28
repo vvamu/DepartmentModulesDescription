@@ -11,7 +11,7 @@ public static class TranslationHelper
         {
 
             //var result = await translator.TranslateAsync(GTranslatorAPI.Languages.be, GTranslatorAPI.Languages.ru, "Добрага ранку");
-            var result = await translator.TranslateAsync(GTranslatorAPI.Languages.be, GTranslatorAPI.Languages.ru, str);
+            var result = await translator.TranslateAsync(GTranslatorAPI.Languages.be, GTranslatorAPI.Languages.ru, str.Replace("«", "\"").Replace("»", "\""));
 
             return result.TranslatedText;
         }

@@ -21,8 +21,8 @@ public partial class WordExecuter
         foreach (var folder in dir.GetDirectories())
         {
             var folderName = targetDirectory + "\\" + folder.Name;
-
             if (folderName.Contains("-Готово") || folderName.Contains("-Учебные планы")) { continue; }
+
             
             if (Directory.Exists(folderName))
             {

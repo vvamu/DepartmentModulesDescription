@@ -10,4 +10,7 @@ public static class ModuleWordHelper
 
     public static bool IsSpecialityRow(string rowCellDescr) => (rowCellDescr.Contains("код") || rowCellDescr.Contains("назван")) && rowCellDescr.Contains("специальн")
         || rowCellDescr.Contains("код") && rowCellDescr.Contains("спецыяльнасц");
+
+
+    
 }
