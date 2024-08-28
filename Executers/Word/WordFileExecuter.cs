@@ -16,15 +16,17 @@ using ConsoleApp1.Models;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.InkML;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
-using _context = ConsoleApp1.Persistence.ApplicationDbContext;
 using ConsoleApp1.Application;
 using ConsoleApp1.Executers.Word;
+using System.Xml.Linq;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace ConsoleApp1.Helpers;
 
 public partial class WordExecuter
 {
-    public class WordFileExecuter
+    public partial class WordFileExecuter
     {
         public string FullFilePath { get; set; } = "";
         public string FileName { get; set; } = "";
@@ -43,19 +45,22 @@ public partial class WordExecuter
 
 
 
-        public async Task HandleFile(string filename)
+        public async Task HandleFile(string filePath)
         {
             
-            if (!filename.Contains(".docx") && filename.Contains(".doc"))
+            if (!filePath.Contains(".docx") && filePath.Contains(".doc"))
             {
-                filename = ConvertDocToDocx(filename);
+                filePath = ConvertDocToDocx(filePath);
             }
-            else if (!filename.Contains(".docx"))
+            else if (!filePath.Contains(".docx"))
             {
-                Console.WriteLine($"File with incorrect format in method 'HandleFile' - {filename}");
+                Console.WriteLine($"File with incorrect format in method 'HandleFile' - {filePath}");
                 return;
             }
-            await HandleTablesByWordFile(filename);
+            if(ModuleService.IsFileAlreadyExists(filePath)) return;
+            
+
+            await HandleTablesByWordFile(filePath);
 
         }
 
@@ -64,33 +69,58 @@ public partial class WordExecuter
 
             try
             {
-                if (filename.Contains("ТДиД"))
+                if (filename.Contains("ЛУ"))
                 //if (filename.Contains("D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Каталог учебных дисцилин\\ЭТИГ\\Каталог учебных дисциплин.docx"))
                 {
                     Console.Write("");
                 }
+
+
                 using (var wDoc = DocumentFormat.OpenXml.Packaging.WordprocessingDocument.Open(filename, false))
                 {
 
                     var parts = wDoc.MainDocumentPart.Document.Descendants().FirstOrDefault();
+                    
+                    Module resultModule = new Module(FolderName, FileName, FullFilePath, IsDocxConvertedByDoc);
+                    List<Module> modulesInDifferentTables = new List<Module>();
+
+                    var IsTableHandled = false;
+                    var fullDescriptionForBrokenFilesStringBuilder = new StringBuilder();
+                    var fullDescriptionForBroken = "";
                     if (parts != null)
 
                     {
                         foreach (var node in parts.ChildElements)
                         {
-                            /*
-                            if (node is Paragraph)
-                            {
-                                ProcessParagraph((Paragraph)node, textBuilder);
-                                textBuilder.AppendLine("");
-                            }*/
-
 
                             if (node is Table)
                             {
-                                await ProcessTable((Table)node);
+                                var res = await ProcessTable((Table)node, resultModule);
+                                modulesInDifferentTables.Add((await ProcessTable((Table)node, new Module(FolderName, FileName, FullFilePath, IsDocxConvertedByDoc))).Item1);
+                                resultModule = res.Item1;
+                                if(res.Item2 != null && res.Item2.Count() > 1)
+                                    foreach(var item in res.Item2)
+                                    {
+                                        if (!string.IsNullOrEmpty(item.Name)) ModuleService.Create(item);
+                                    }
+                                IsTableHandled = true;
                             }
+                            if(((filename.Contains("ДОСИ") || filename.Contains("ТиО") || filename.Contains("ЭиУП"))) && IsTableHandled && node is Paragraph)
+                            {
+                                //fullDescriptionForBrokenFilesStringBuilder.Append(ProcessParagraph((Paragraph)node));
+                                fullDescriptionForBroken += ProcessParagraph((Paragraph)node,true);
+
+                            }  
                         }
+
+                        
+                        if(filename.Contains("ТиО") && string.IsNullOrEmpty(fullDescriptionForBroken) && string.IsNullOrEmpty(resultModule.Name))
+                        {
+                            resultModule = ProcessFormatInTIO(parts, resultModule);
+                        }
+                        if ((filename.Contains("ДОСИ") || filename.Contains("ТиО") || filename.Contains("ЭиУП")) &&  string.IsNullOrEmpty(resultModule.Description) && !string.IsNullOrEmpty(fullDescriptionForBroken)) resultModule.Description = fullDescriptionForBroken;
+                        if (modulesInDifferentTables.Count > 0) { foreach (var item in modulesInDifferentTables) ModuleService.Create(item); return; }
+                        ModuleService.Create(resultModule);
                     }
                 }
             }
@@ -100,23 +130,6 @@ public partial class WordExecuter
                 return;
             }
         }
-
-        //private static bool IsNeedConvertToDocs()
-        //{
-        //    var anyFoundModule = modules.FirstOrDefault(x => x.Equals(module));
-        //    if (anyFoundModule != null && anyFoundModule.IsDifferentDescriptionAndDateLastUpdate(module)) //If I found equals. Check if description and dateLastUpdate
-        //    {
-        //        ApplicationDbContext.Update(module);
-        //        return;
-        //    }
-        //    //if not exists equals. For new created files with .docx format just return because we will check 
-        //    if (module.FullFilePath.Contains(".docx"))
-        //    {
-        //        var newFullPath = module.FullFilePath.Replace(".docx", ".doc");
-        //        if (File.Exists(newFullPath)) return;
-        //    }
-        //    return true;
-        //}
 
         public  string ConvertDocToDocx(string docPath, string docxPath = "")
         {
@@ -129,104 +142,60 @@ public partial class WordExecuter
             IsDocxConvertedByDoc = true;
             return docxPath;
         }
-        private async Task ProcessTable(Table node)
+       
+        private string ProcessParagraph(Paragraph node, bool isd = true)
         {
-            Module resultModule = new Module();
-            resultModule.DepartmentShortName = FolderName;
-            resultModule.FileName = FileName;
-            resultModule.FullFilePath = FullFilePath;
-            resultModule.IsDocxConvertedByDoc = IsDocxConvertedByDoc;
-            foreach (var row in node.Descendants<TableRow>())
-            {
-                Module? module;
-                ///TODO
-                try
-                {
-                    module = ProcessRowTopDown(row);
-                }
-                catch (Exception ex)
-                {
-                    module = ProcessRowLeftRight(row);
-                }
-
-                if (module == null) continue;
-                if (!string.IsNullOrEmpty(module.Description)) resultModule.Description = module.Description;
-                if (!string.IsNullOrEmpty(module.Name)) resultModule.Name = module.Name;
-                if (!string.IsNullOrEmpty(module.Speciality)) resultModule.Speciality = module.Speciality;
-
-                
-                    
-
-                /*
-
-                    foreach (var para in cell.Descendants<Paragraph>())
-                    {
-                        ProcessParagraph(para, textBuilder);
-                    }
-                */
-            }
-            if (this.IsNeedToTranslate)
-            {
-                var module2 = await TranslationHelper.TranslateToRu(resultModule);
-                var stringfefef = "";
-            }
-            if (string.IsNullOrEmpty(resultModule.Speciality))
-                resultModule.Speciality = "Отсутствует в файле";
-            if (string.IsNullOrEmpty(resultModule.Name))
-                resultModule.Name = "Отсутствует в файле";
-            if (string.IsNullOrEmpty(resultModule.Description))
-                resultModule.Description = "Отсутствует в файле";
-
-
-            
-
-            ModuleService.Create(resultModule);
-        }
-        private Module ProcessRowTopDown(TableRow row)
-        {
-            var module = new Module();
-            var rowText = row.InnerText.ToLower().Replace(" ", "").Replace("-", "");
-            if (ModuleWordHelper.IsDescriptionRow(rowText) || ModuleWordHelper.IsNameRow(rowText) || ModuleWordHelper.IsSpecialityRow(rowText))
-            {
-                var rowArray = row.Descendants<TableCell>().ToArray();
-
-                for (int i = 0; i < row.Descendants<TableCell>().Count() - 1; i++)
-                {
-                    var rowCellDescr = rowArray[i].InnerText.ToLower().Replace(" ", "").Replace("-", "");
-                    if (ModuleWordHelper.IsDescriptionRow(rowCellDescr))
-                    {
-                        module.Description = rowArray[i + 1].InnerText;
-
-                    }
-                    else if (ModuleWordHelper.IsNameRow(rowCellDescr))
-                    {
-                        module.Name = rowArray[i + 1].InnerText;
-                    }
-                    else if (ModuleWordHelper.IsSpecialityRow(rowCellDescr))
-                    {
-                        module.Speciality = rowArray[i + 1].InnerText;
-                    }
-                    //else if (i == rowArray.Count() - 1){}
-
-                }
-                return module;
-                //ExcelExecuter.WriteRow(new List<Models.Module>());
-            }
-            return null;
-
-        }
-
-        //TODO
-        private Module ProcessRowLeftRight(TableRow row)
-        {
-            return new Module();
-        }
-        private void ProcessParagraph(Paragraph node, StringBuilder textBuilder)
-        {
+            var res = string.Empty;
             foreach (var text in node.Descendants<Text>())
             {
-                //textBuilder.Append('"' + text.InnerText + '"');
+                res += text.InnerText;        
             }
+            return res;
+        }
+        // :(
+        //private IEnumerable<string> ProcessParagraph(Paragraph node)
+        //{
+            
+        //    foreach (var text in node.Descendants<Text>())
+        //    {
+        //        var ress = text.InnerText;
+        //       yield return ress ?? "";
+        //    }
+        //}
+        private Module ProcessFormatInTIO(OpenXmlElement parts, Module module)
+        {
+            var fullText = string.Empty;
+            foreach (var node in parts.ChildElements)
+            {
+                if (node is Paragraph)
+                {
+                    fullText += ProcessParagraph((Paragraph)node, true);
+                }
+            }
+            int index1 = fullText.IndexOf("Профилизация:", StringComparison.Ordinal);
+            int index2 = fullText.IndexOf("Дисциплина ", StringComparison.Ordinal);
+            if (index2 != -1) module.Speciality = ExtractTextBetween(fullText, "Специальность ", "Дисциплина") == "" ? ExtractTextBetween(fullText, "Специальности ", "Дисциплина") : ExtractTextBetween(fullText, "Специальность ", "Дисциплина"); 
+            else module.Speciality = ExtractTextBetween(fullText, "Специальность ", "Профилизация") == "" ? ExtractTextBetween(fullText, "Специальности ", "Профилизация") : ExtractTextBetween(fullText, "Специальность ", "Профилизация");
+           
+            module.Name = ExtractTextBetween(fullText, "Дисциплина ", "Содержание");
+
+            int indexDescription = fullText.IndexOf("Содержание:", StringComparison.Ordinal);
+            if (indexDescription >= 0)  module.Description = fullText.Substring(indexDescription + "Содержание:".Length);
+
+            return module;
+        }
+
+        private string ExtractTextBetween(string input, string start, string end)
+        {
+            int startIndex = input.IndexOf(start) + start.Length;
+            int endIndex = input.IndexOf(end, startIndex);
+
+            if (startIndex >= 0 && endIndex >= 0)
+            {
+                return input.Substring(startIndex, endIndex - startIndex).Trim();
+            }
+
+            return string.Empty;
         }
     }
 }

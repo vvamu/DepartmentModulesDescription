@@ -1,21 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using SQLite;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ConsoleApp1.Models;
 
 public class Module
 {
+    [PrimaryKey]
     public Guid Id { get; set; } = Guid.NewGuid();
     public string DepartmentShortName { get; set; }
     public string Speciality { get; set; }
+    
+    public string LowerAndTrimSpeciality { get; set; }
 
-    public string Name { get; set; } //= "Не задано или названо некорректно"; //if (node consists 'Название учебной дисциплины')
+    public string Name { get; set; }
 
-    public string Description { get; set; } //= "Не задано"; //if (node consists 'Краткое содержание учебной дисциплины')
+    public string Description { get; set; } 
 
     public string DateLastUpdateFileString {get;set;}
-    //[NotMapped]
-    //public DateTime DateLastUpdateFile { get; set; }
-
     [NotMapped]
     public bool IsDocxConvertedByDoc { get; set; }
 
@@ -38,14 +39,33 @@ public class Module
         return Speciality == other.Speciality 
             &&  Name == other.Name 
             && DepartmentShortName == other.DepartmentShortName 
-            && Description == other.Description;
+            ;
     }
 
     public bool IsDifferentDescriptionAndDateLastUpdate(Module other)
     {
         return Description != other.Description && DateLastUpdateFileString != other.DateLastUpdateFileString;
     }
+    public Module() { }
 
+
+    public Module(string departmentShortName,string speciality, string name, string description,string fullFilePath = "", string fileName = "", bool isDocxConvertedByDoc = false)
+    {
+        DepartmentShortName = departmentShortName;
+        Speciality = speciality;
+        Name = name;
+        Description = description;
+        IsDocxConvertedByDoc = isDocxConvertedByDoc;
+        if (!string.IsNullOrEmpty(fullFilePath)) FullFilePath = fullFilePath;
+        if (!string.IsNullOrEmpty(fileName)) FileName = fileName;
+    }
+    public Module(string departmentShortName, string fileName, string fullFilePath, bool isDocxConvertedByDoc)
+    {
+        DepartmentShortName = departmentShortName;
+        FileName = fileName;
+        FullFilePath = fullFilePath;
+        IsDocxConvertedByDoc = isDocxConvertedByDoc;
+    }
     /*
     public bool Compare(object obj)
     {
