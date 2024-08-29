@@ -23,9 +23,6 @@ public class Module
     public string FileName { get; set; }
     public string FullFilePath { get; set; } 
 
-
-
-
     public override string ToString()
     {
         return $"{DepartmentShortName} - {FileName}; Speciality {Speciality}; Module: {Name} - {Description}  ";
