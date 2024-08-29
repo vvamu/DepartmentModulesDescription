@@ -29,7 +29,7 @@ internal static class ExcelExecuter
 
     public static string? customNormalize(this string? str)
     {
-        return str?.ToLower().Replace(" ", "").Replace("ё", "е").Replace("*", "");
+        return str?.ToLower().Replace(" ", "").Replace("ё", "е").Replace("*", "").Replace("\n", "");
     }
 
     public static void EditDirSpecialities(string dir) 
@@ -43,8 +43,9 @@ internal static class ExcelExecuter
 
     public static void EditSpecialityDescriptions(string file_path) 
     {
+        bool chkDepartment = false;
         string file_name = Path.GetFileName(file_path);
-        Console.WriteLine(file_name);
+        Console.Write(file_name);
 
         try
         {
@@ -95,8 +96,18 @@ internal static class ExcelExecuter
                         goto End;
 
                     var excel_modules = excel_full_module_name.Split("/");
+
+                    if (excel_department_name.Contains("НГПиНХ".customNormalize())
+                        || excel_department_name.Contains("ТДП".customNormalize())
+                        || excel_department_name.Contains("ЭТИГ".customNormalize())
+                        || excel_department_name.Contains("ПЭ".customNormalize())
+                        || excel_department_name.Contains("ПКМ".customNormalize()))
+                        chkDepartment = true;
+                    else
+                        chkDepartment = false;
+
                     foreach (var excel_module in excel_modules) 
-                    {
+                    {                        
                         IEnumerable<Module> selected_modules = table;
                         if (!excel_department_name.Contains("/") && !excel_department_name.Contains(",")) 
                         {
@@ -121,9 +132,11 @@ internal static class ExcelExecuter
                         module_db = selected_modules.Where(m => m.Speciality.GetDigits().Contains(speciality_code)).FirstOrDefault();
                         if (module_db is null)
                         {
-                            description_cell.Value += $"Дисциплина \"{excel_module}\" без специальности.\n\n";
-                            description_cell.Style.Font.Color.SetColor(System.Drawing.Color.Red);
-                            continue;
+                            //description_cell.Value += $"Дисциплина \"{excel_module}\" без специальности.\n\n";
+                            //description_cell.Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                            //continue;
+
+                            module_db = selected_modules.FirstOrDefault();
                         }
                         //module_db = table.Where(
                         //    m => m.Name.ToLower().Replace(" ", "").Contains(excel_module_name)
@@ -147,6 +160,74 @@ internal static class ExcelExecuter
         {
             Console.WriteLine($"Не удалось изменить файл {file_name} Excel. Ошибка: {ex.Message}");
         }
+
+        Console.WriteLine(chkDepartment ? " - Да" : " - Нет");
+    }
+
+    public static List<ModuleWrite> GetExcelDataIntoModel(string file_path)
+    {
+        string file_name = Path.GetFileName(file_path);
+        try
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage(file_path))
+            {
+                var sheet = package.Workbook.Worksheets[0];
+                List<ModuleWrite> modules = new List<ModuleWrite>();
+
+                var module_title_cell = sheet.Cells.Where(x => x.Text
+                .Contains("Название модуля, учебной дисциплины, курсового проекта (курсовой работы)"))
+                    .FirstOrDefault();
+                var module_title_coll = module_title_cell.ToString().GetLetters();
+                var module_title_row = module_title_cell.ToString().GetDigits();
+
+                int i = int.Parse(module_title_row) + 5;
+                while (!sheet.Cells["A" + i].Value?.ToString()
+                        .customNormalize()
+                        .Contains("Учебные практики".customNormalize())
+                        ?? true) 
+                {
+                    if (string.IsNullOrEmpty(sheet.Cells["A" + i].Value?.ToString())) goto End;
+                    if (sheet.Cells["AG" + i].Value is null) goto End;
+                    if (sheet.Cells["A" + i].Value.ToString().customNormalize().Contains("Курсовая работа".customNormalize())
+                        || sheet.Cells["A" + i].Value.ToString().customNormalize().Contains("Курсовой проект".customNormalize()))
+                        goto End;
+                    //if (System.Drawing.ColorTranslator.FromHtml(sheet.Cells["AG" + i].Style.Font.Color.LookupColor())
+                    //    == System.Drawing.Color.Red) 
+                    //    goto End;
+                    //Console.WriteLine(System.Drawing.ColorTranslator.FromHtml(sheet.Cells["AG" + i].Style.Font.Color.LookupColor()));
+
+                    ModuleWrite module = new ModuleWrite();
+                    module.Name = sheet.Cells["A" + i].Value?.ToString();
+                    module.Exams = sheet.Cells["Q" + i].Value?.ToString();
+                    module.Receives = sheet.Cells["S" + i].Value?.ToString() +
+                                      " " + sheet.Cells["T" + i].Value?.ToString();
+                    module.TotalHours = sheet.Cells["U" + i].Value?.ToString();
+                    module.AuditoriumHours = sheet.Cells["W" + i].Value?.ToString();
+                    module.LectureHours = sheet.Cells["Y" + i].Value?.ToString();
+                    module.LabsHours = sheet.Cells["AA" + i].Value?.ToString();
+                    module.PracticeHours = sheet.Cells["AC" + i].Value?.ToString();
+                    module.SeminarHours = sheet.Cells["AE" + i].Value?.ToString();
+                    module.DepartmentShortName = sheet.Cells["AG" + i].Value?.ToString();
+                    module.ReceivedUnits = sheet.Cells["AH" + i].Value?.ToString();
+                    module.Description = sheet.Cells["AI" + i].Value?.ToString();
+                    module.FileName = file_name.Replace(".xlsx", "");
+
+                    modules.Add(module);
+                    
+                    End:
+                        i += 1;
+                }
+
+                return modules;
+            }
+        }
+        catch (Exception ex) 
+        {
+            Console.WriteLine($"Не удалось считать файл {file_name} Excel. Ошибка: {ex.Message}");
+            return null;
+        }
+
     }
 
     public static void WriteRow(List<Module> modules)
