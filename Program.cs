@@ -1,5 +1,9 @@
 ﻿using ConsoleApp1.Application;
+using ConsoleApp1.Executers;
+using ConsoleApp1.Executers.Word;
+using ConsoleApp1.Executers.Word.Write;
 using ConsoleApp1.Helpers;
+using ConsoleApp1.Models;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Wordprocessing;
 
@@ -13,14 +17,14 @@ internal class Program
         //GetFilesFromSubfolder("ТДиД");
         //GetFilesFromSubfolder("ФиП");
 
-        SettingsHelper.Path = "D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин";
+        SettingsHelper.Path = "D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Каталог учебных дисцилин";
         File.Delete(Path.Combine(path, "ЛПиСПС\\ЛПС_Декоративная дендрология(1).docx"));
 
         #region Word
         var wordExecuter = WordExecuter.getInstance(path);
         var countRowsBefore = SettingsHelper.CountRows;
 
-        //await WordExecuter.ProcessRootDirectoryToFindOtherFoldersWithFiles();
+        //await WordExecuter.ProcessRootDirectoryToFindOtherFoldersWithFilesToRead();
 
         var countRowsAfter = SettingsHelper.CountRows;
 
@@ -34,37 +38,40 @@ internal class Program
 
         #region Excel
         //ExcelExecuter.EditSpecialityDescriptions("6-05-0211-06 Example.xlsx");
-        ExcelExecuter.EditDirSpecialities("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST");
+        //ExcelExecuter.EditDirSpecialities("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST");
         #endregion
 
         #region Testing
-        TestingService.PrintAllErrorDocsInDatabaseBySettingsHelper();
-        TestingService.AreEqualsCountFilesInDirectoryAndCountDepartmentsAndCountRowsInDatabase();
-        TestingService.CheckCountDepartments();
+        //TestingService.PrintAllErrorDocsInDatabaseBySettingsHelper();
+        //TestingService.AreEqualsCountFilesInDirectoryAndCountDepartmentsAndCountRowsInDatabase();
+        //TestingService.CheckCountDepartments();
 
-        Console.WriteLine("");
-        Console.WriteLine("------------ Изменено: ------------"); 
-        Console.WriteLine("Файл МТБиУР - Кросс-культурный менеджмент <Коммуникации> - копия.docx перебран руками");
-        Console.WriteLine("Файл МТБиУР - Международная экологическая экономика <Бизнес-аналитика-2>.docx перебран руками");
-        Console.WriteLine("Файл РИТ - Моделирование и оптимизация технологических процессов редакционно-издательской деятельности.docx перебран руками");
-        Console.WriteLine("Файл ТДиД - 2 Транспортые системы и оборудование в деревообработке-1.doc перебран руками");
-        Console.WriteLine("Файл ТДиД - 9 Проектирование деревообрабатывающих предприятий-1.doc перебран руками");
-        Console.WriteLine("Папка ФХМОК перебрана руками");
-        Console.WriteLine("Файл ЛУ - Созданный документ руками.docx создан вместо файл Описание учебных дисциплин кафедры лесоустройства для составления каталога.docx из-за наличия ошибки");
-        Console.WriteLine("Файл ТИО - Охотоведение и охотничье хозяйство(1).docx не берется в расчет");
-        Console.WriteLine("Файл ЛПС_Декоративная дендрология(1).docx удален");
+        //Console.WriteLine("");
+        //Console.WriteLine("------------ Изменено: ------------"); 
+        //Console.WriteLine("Файл МТБиУР - Кросс-культурный менеджмент <Коммуникации> - копия.docx перебран руками");
+        //Console.WriteLine("Файл МТБиУР - Международная экологическая экономика <Бизнес-аналитика-2>.docx перебран руками");
+        //Console.WriteLine("Файл РИТ - Моделирование и оптимизация технологических процессов редакционно-издательской деятельности.docx перебран руками");
+        //Console.WriteLine("Файл ТДиД - 2 Транспортые системы и оборудование в деревообработке-1.doc перебран руками");
+        //Console.WriteLine("Файл ТДиД - 9 Проектирование деревообрабатывающих предприятий-1.doc перебран руками");
+        //Console.WriteLine("Папка ФХМОК перебрана руками");
+        //Console.WriteLine("Файл ЛУ - Созданный документ руками.docx создан вместо файл Описание учебных дисциплин кафедры лесоустройства для составления каталога.docx из-за наличия ошибки");
+        //Console.WriteLine("Файл ТИО - Охотоведение и охотничье хозяйство(1).docx не берется в расчет");
+        //Console.WriteLine("Файл ЛПС_Декоративная дендрология(1).docx удален");
+        //Console.WriteLine("------------");
+        //Console.WriteLine("Папка МКиТП содержит данные без описания - перебрана руками");
+        //Console.WriteLine("Папку НГПиНХ перебрана руками");
+        //Console.WriteLine("Папку ТДП перебрана руками");
+        //Console.WriteLine("Папку ЭТИГ перебрана руками");
+        //Console.WriteLine("Папку НГПиНХ перебрана руками");
+        //Console.WriteLine("Папку ПЭ частично перебрана руками");
+        //Console.WriteLine("Папку ПКМ частично перебрана руками");
 
+        //Console.WriteLine("------------ Необходимо изменить: ------------");
 
-        Console.WriteLine("------------ Необходимо изменить: ------------");
-        Console.WriteLine("Папка МКиТП содержит данные без описания");
-        Console.WriteLine("Папку НГПиНХ необходимо перебрать руками");
-        Console.WriteLine("Папку ТДП необходимо перебрать руками");
-        Console.WriteLine("Папку ЭТИГ необходимо перебрать руками");
-        Console.WriteLine("Папку НГПиНХ необходимо перебрать руками");
-        Console.WriteLine("Папку ПЭ частично необходимо перебрать руками");
-        Console.WriteLine("Папку ПКМ частично необходимо перебрать руками");
+        var writer = new WordFileWriter();
+        var info = new ModuleWrite() { FullPath = Path.Combine(Path.Combine(path, "-Готово"), "6-05-0714-08 Промышленный дизайн.xlsx") };
 
-
+        await writer.WriteIntoDocumentAsync(info);
 
 
 
