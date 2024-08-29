@@ -13,14 +13,14 @@ internal class Program
         //GetFilesFromSubfolder("ТДиД");
         //GetFilesFromSubfolder("ФиП");
 
-        SettingsHelper.Path = "D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Каталог учебных дисцилин";
+        SettingsHelper.Path = "D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин";
         File.Delete(Path.Combine(path, "ЛПиСПС\\ЛПС_Декоративная дендрология(1).docx"));
 
         #region Word
         var wordExecuter = WordExecuter.getInstance(path);
         var countRowsBefore = SettingsHelper.CountRows;
 
-        await WordExecuter.ProcessRootDirectoryToFindOtherFoldersWithFiles();
+        //await WordExecuter.ProcessRootDirectoryToFindOtherFoldersWithFiles();
 
         var countRowsAfter = SettingsHelper.CountRows;
 
@@ -34,7 +34,7 @@ internal class Program
 
         #region Excel
         //ExcelExecuter.EditSpecialityDescriptions("6-05-0211-06 Example.xlsx");
-        //ExcelExecuter.EditDirSpecialities("D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин\\-Готово_TEST");
+        ExcelExecuter.EditDirSpecialities("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST");
         #endregion
 
         #region Testing
@@ -272,6 +272,7 @@ internal class Program
         "Международная экологическая экономика "
         , "Главной целью изучения дисциплины «Международная экологическая экономика» является формирование у будущих менеджеров нетрадиционного профессионального мышления, основанного на интересах роста конкурентоспособности национальной экономики в условиях выбора альтернатив устойчивого развития и усиливающейся роли глобального экологического фактора системы международных экологических отношений. Задачи преподавания дисциплины «Международная экологическая экономика» состоят в формировании у студентов:\r\n – знаний в области международных отношений, связанных с реализацией глобального экологического фактора и обеспечивающих приращение национального капитала; \r\n– знаний и умений для принятия управленческих решений с учетом современных тенденций устойчивого развития и складывающихся международных отношений в экологической сфере, выработка практических навыков решения международных эколого-экономических задач;\r\n – навыка применять зарубежный опыт в решении эколого-экономических задач международного уровня.\r\n\r\n"
         );
+        
 
     }
 

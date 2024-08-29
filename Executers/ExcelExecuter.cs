@@ -27,9 +27,9 @@ internal static class ExcelExecuter
         return new string(str.ToCharArray().Where(c =>! char.IsDigit(c)).ToArray());
     }
 
-    public static string customNormalize(this string str)
+    public static string? customNormalize(this string? str)
     {
-        return str.ToLower().Replace(" ", "").Replace("ё", "е").Replace("*", "");
+        return str?.ToLower().Replace(" ", "").Replace("ё", "е").Replace("*", "");
     }
 
     public static void EditDirSpecialities(string dir) 

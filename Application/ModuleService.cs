@@ -11,7 +11,6 @@ internal static class ModuleService
     public static void Create(Models.Module module)
     {
         if (string.IsNullOrEmpty(module.Speciality) && string.IsNullOrEmpty(module.Name)) return;
-        if(string.IsNullOrEmpty(module.DepartmentShortName)) return;
         if (!string.IsNullOrEmpty(module.Speciality))
         module.LowerAndTrimSpeciality = module.Speciality.Trim().ToLower().Replace(" ", "");
 
@@ -30,11 +29,11 @@ internal static class ModuleService
                 module.Id = anyFoundModule.Id;
                 ApplicationDbContext.Update(module);
                 SettingsHelper.countUpdatedRows++;
-                //Console.WriteLine("--------------------------");
-                //Console.WriteLine($"Updated : {module.DepartmentShortName} {module.FileName} {module?.Name}");
-                //Console.WriteLine($"From: {module?.Description} - {module?.DateLastUpdateFileString}");
-                //Console.WriteLine($"To : {anyFoundModule.Description} {anyFoundModule.DateLastUpdateFileString}");
-                //Console.WriteLine("--------------------------");
+                Console.WriteLine("--------------------------");
+                Console.WriteLine($"Updated : {module.DepartmentShortName} {module.FileName} {module?.Name}");
+                Console.WriteLine($"From: {module?.Description} - {module?.DateLastUpdateFileString}");
+                Console.WriteLine($"To : {anyFoundModule.Description} {anyFoundModule.DateLastUpdateFileString}");
+                Console.WriteLine("--------------------------");
 
                 return;
             }
