@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp1.Executers.Word;
+﻿namespace ConsoleApp1.Executers.Word.Helpers;
 
 public static class ModuleWordHelper
 {
@@ -12,5 +12,5 @@ public static class ModuleWordHelper
         || rowCellDescr.Contains("код") && rowCellDescr.Contains("спецыяльнасц");
 
 
-    
+
 }

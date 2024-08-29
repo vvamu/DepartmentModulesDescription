@@ -1,20 +1,22 @@
-﻿using ConsoleApp1.Persistence;
+﻿using ConsoleApp1.Executers.Word.Write;
+using ConsoleApp1.Helpers;
+using ConsoleApp1.Models;
+using ConsoleApp1.Persistence;
 using DocumentFormat.OpenXml.Drawing;
 
-namespace ConsoleApp1.Helpers;
+namespace ConsoleApp1.Executers.Word;
 
 public partial class WordExecuter
 {
-   
+
     private static string _targetDirectory = "";
     private static WordExecuter? instance; private WordExecuter(string targetDirectory) { _targetDirectory = targetDirectory; }
     public static WordExecuter getInstance(string targetDirectory) => instance ?? new WordExecuter(targetDirectory);
     //
-   
-    public static async Task ProcessRootDirectoryToFindOtherFoldersWithFiles(string targetDirectory = "")
+
+    public static async Task ProcessRootDirectoryToFindOtherFoldersWithFilesToRead(string targetDirectory = "")
     {
-        targetDirectory = string.IsNullOrEmpty(targetDirectory) 
-            ? (string.IsNullOrEmpty(_targetDirectory) ? throw new Exception("Path for word file is not set") : _targetDirectory) : targetDirectory;
+        targetDirectory = string.IsNullOrEmpty(targetDirectory) ? string.IsNullOrEmpty(_targetDirectory) ? throw new Exception("Path for word file is not set") : _targetDirectory : targetDirectory;
 
         DirectoryInfo dir = new DirectoryInfo(targetDirectory);
 
@@ -23,7 +25,7 @@ public partial class WordExecuter
             var folderName = targetDirectory + "\\" + folder.Name;
             if (folderName.Contains("-Готово") || folderName.Contains("-Учебные планы")) { continue; }
 
-            
+
             if (Directory.Exists(folderName))
             {
                 //var folderd = new WordFolderExecuter();
@@ -32,38 +34,55 @@ public partial class WordExecuter
 
         }
     }
-
-    public static async Task ProcessFilesByDirectory(string targetDirectory)
+    public static async Task ProcessDirectoryToWrite()
     {
-        targetDirectory = string.IsNullOrEmpty(targetDirectory) ? (string.IsNullOrEmpty(_targetDirectory) ? throw new Exception("Path for word file is not set") : _targetDirectory) : targetDirectory;
-        string[] fileEntries = Directory.GetFiles(targetDirectory);
-       
-        foreach (string fileName in fileEntries)
+        DirectoryInfo dir = new DirectoryInfo(_targetDirectory);
+
+        foreach (var file in dir.GetFiles())
         {
-            var fileExecuter = new WordFileExecuter(fileName); // This should now find the WordFolderFileExecuter class
-            await fileExecuter.HandleFile(fileName);
+            if (Directory.Exists(file.FullName))
+            {
+                //await ProcessFilesByDirectory(folderName);
+                var info = new ModuleWrite();
+                info.FullPath = file.FullName;
+                var wordFileWriter = new WordFileWriter();
+                await wordFileWriter.WriteIntoDocumentAsync(info);
+
+            }
+
         }
-        
-        await RemoveAllDocsFormattedByDoc();
-
-
-
     }
+
     public static async Task RemoveAllDocsFormattedByDoc()
     {
         var modules = ApplicationDbContext.SelectAll<Models.Module>().Where(x => x.IsDocxConvertedByDoc).Select(x => x.FullFilePath);
         foreach (var filePath in modules)
-        { 
-            var filePathDocx = filePath +"x";
+        {
+            var filePathDocx = filePath + "x";
             File.Delete(filePathDocx);
-            if(Directory.Exists(filePathDocx))
+            if (Directory.Exists(filePathDocx))
             {
                 var fileDel = new FileInfo(filePathDocx);
                 fileDel.Delete();
             }
-            
+
         }
 
+    }
+
+
+    private static async Task ProcessFilesByDirectory(string targetDirectory)
+    {
+        targetDirectory = string.IsNullOrEmpty(targetDirectory) ? string.IsNullOrEmpty(_targetDirectory) ? throw new Exception("Path for word file is not set") : _targetDirectory : targetDirectory;
+        string[] fileEntries = Directory.GetFiles(targetDirectory);
+
+        foreach (string fileName in fileEntries)
+        {
+            var fileExecuter = new WordFileReader(fileName); // This should now find the WordFolderFileExecuter class
+            await fileExecuter.HandleFile(fileName);
+        }
+
+        await RemoveAllDocsFormattedByDoc();
     }
 
 
