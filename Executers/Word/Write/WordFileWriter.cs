@@ -111,13 +111,17 @@ public class WordFileWriter
                 {
                     docBody.Append(
                         new Paragraph(
-                            new Run(
-                                new RunProperties(new RunFonts() { Ascii = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
-                                new Text("Учебная дисциплина (модуль): ")
+                            new ParagraphProperties(
+                                new Justification() { Val = JustificationValues.Both }
                             ),
                             new Run(
-                                new RunProperties(new RunFonts() { Ascii = "Times New Roman" }, new FontSize() { Val = "28" }),
-                                new Text(" " + moduleWrite.Name.Replace("\n", "").Replace("\r", ""))
+                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                new Text("Учебная дисциплина (модуль): "),
+                                new Text(" ")
+                            ),
+                            new Run(
+                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
+                                new Text(" " + moduleWrite.Name)
                             )
                         )
                     );
@@ -126,13 +130,16 @@ public class WordFileWriter
                     {
                         docBody.Append(
                             new Paragraph(
+                                new ParagraphProperties(
+                                    new Justification() { Val = JustificationValues.Both }
+                                ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { Ascii = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
                                     new Text("Экзамены: ")
                                 ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { Ascii = "Times New Roman" }, new FontSize() { Val = "28" }),
-                                    new Text(" " + moduleWrite.Exams.Replace("\n", "").Replace("\r", ""))
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
+                                    new Text(" " + moduleWrite.Exams)
                                 )
                             )
                         );
@@ -142,13 +149,16 @@ public class WordFileWriter
                     {
                         docBody.Append(
                             new Paragraph(
+                                new ParagraphProperties(
+                                    new Justification() { Val = JustificationValues.Both }
+                                ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { Ascii = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
                                     new Text("Зачеты: ")
                                 ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { Ascii = "Times New Roman" }, new FontSize() { Val = "28" }),
-                                    new Text(" " + moduleWrite.Receives.Replace("\n", "").Replace("\r", ""))
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
+                                    new Text(" " + moduleWrite.Receives)
                                 )
                             )
                         );
@@ -157,25 +167,34 @@ public class WordFileWriter
 
                     docBody.Append(
                         new Paragraph(
+                            new ParagraphProperties(
+                                    new Justification() { Val = JustificationValues.Both }
+                                ),
                             new Run(
-                                new RunProperties(new RunFonts() { Ascii = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
                                 new Text("Всего: ")
                             ),
                             new Run(
-                                new RunProperties(new RunFonts() { Ascii = "Times New Roman" }, new FontSize() { Val = "28" }),
-                                new Text(" " + $"{moduleWrite?.TotalHours} ч. ({moduleWrite.GetAuditoriumHours} , {moduleWrite.GetLectureHours} , {moduleWrite.GetLabsHours} , {moduleWrite.GetPracticeHours} , {moduleWrite.GetSeminarHours} )".Replace("\n", "").Replace("\r", ""))
+                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
+                                new Text(" " + $"{moduleWrite?.TotalHours} ч. ({moduleWrite.GetAuditoriumHours}, {moduleWrite.GetLectureHours}, {moduleWrite.GetLabsHours}, {moduleWrite.GetPracticeHours}, {moduleWrite.GetSeminarHours})")
                             )
                         ),
 
                         new Paragraph(
+                            new ParagraphProperties(
+                                    new Justification() { Val = JustificationValues.Both }
+                                ),
                             new Run(
-                                new RunProperties(new RunFonts() { Ascii = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
                                 new Text("Описание учебной дисциплины: ")
                             )                    
                         ),
                         new Paragraph(
+                            new ParagraphProperties(
+                                    new Justification() { Val = JustificationValues.Both }
+                                ),
                             new Run(
-                                new RunProperties(new RunFonts() { Ascii = "Times New Roman" }, new FontSize() { Val = "28" }),
+                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
                                 new Text(moduleWrite.Description?.Replace("\n", "").Replace("\r", ""))
                             )
                         )/*,
