@@ -166,6 +166,9 @@ internal static class ExcelExecuter
 
     public static List<ModuleWrite> GetExcelDataIntoModel(string file_path)
     {
+        if (file_path.Contains(".docx"))
+            return null;
+        
         string file_name = Path.GetFileName(file_path);
         try
         {

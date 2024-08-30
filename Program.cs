@@ -44,7 +44,7 @@ internal class Program
         //ExcelExecuter.EditDirSpecialities(Path.Combine(path, "-Готово"));
 
         //ExcelExecuter.GetExcelDataIntoModel(Path.Combine(Path.Combine(path, "-Готово"), "6-05-0211-06 Издательское дело.xlsx"));
-        await WordExecuter.ProcessDirectoryToWrite();
+        await WordExecuter.ProcessDirectoryToWrite("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST");
         #endregion
 
         #region Testing

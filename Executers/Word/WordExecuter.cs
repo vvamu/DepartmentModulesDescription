@@ -36,14 +36,11 @@ public partial class WordExecuter
     }
     public static async Task ProcessDirectoryToWrite(string path = "")
     {
-
         DirectoryInfo dir = string.IsNullOrEmpty(path) ? new DirectoryInfo(System.IO.Path.Combine(_targetDirectory, "-Готово")) : new DirectoryInfo(path);
+        var wordFileWriter = new WordFileWriter();
 
         foreach (var file in dir.GetFiles())
         {
-            
-            var wordFileWriter = new WordFileWriter();
-
             //if (Directory.Exists(file.FullName))
             {
                 try
