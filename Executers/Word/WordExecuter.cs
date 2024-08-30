@@ -45,6 +45,7 @@ public partial class WordExecuter
             {
                 try
                 {
+                    if (!file.Name.Contains(".docx")) continue; 
                     //await ProcessFilesByDirectory(folderName);
                     var itemsByExcelFile = ExcelExecuter.GetExcelDataIntoModel(file.FullName);
                     if (itemsByExcelFile == null || itemsByExcelFile.Count() < 1) continue;
