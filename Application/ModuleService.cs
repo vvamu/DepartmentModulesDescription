@@ -1,6 +1,8 @@
 ﻿using ConsoleApp1.Helpers;
 using ConsoleApp1.Models;
 using ConsoleApp1.Persistence;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Wordprocessing;
 namespace ConsoleApp1.Application;
 internal static class ModuleService
 {
@@ -9,9 +11,9 @@ internal static class ModuleService
     public static void Create(Models.Module module)
     {
         if (string.IsNullOrEmpty(module.Speciality) && string.IsNullOrEmpty(module.Name)) return;
-        if (string.IsNullOrEmpty(module.DepartmentShortName)) return;
+        if(string.IsNullOrEmpty(module.DepartmentShortName)) return;
         if (!string.IsNullOrEmpty(module.Speciality))
-            module.LowerAndTrimSpeciality = module.Speciality.Trim().ToLower().Replace(" ", "");
+        module.LowerAndTrimSpeciality = module.Speciality.Trim().ToLower().Replace(" ", "");
 
         var modules = ApplicationDbContext.SelectAll<Models.Module>();
         if (module.FullFilePath != null && ConsoleApp1.Helpers.SettingsHelper.IsExistsEqualsDocFileForDocx(module)) return;

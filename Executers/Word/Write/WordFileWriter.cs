@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Break = DocumentFormat.OpenXml.Wordprocessing.Break;
 
 namespace ConsoleApp1.Executers.Word.Write;
 
@@ -9,8 +10,8 @@ public class WordFileWriter
 {
     public async Task WriteIntoDocumentAsync(List<ModuleWrite> moduleWrites)
     {
-        var filePath = moduleWrites.FirstOrDefault().FullPath + ".docx";
-        if (File.Exists(filePath))
+        var filePath = moduleWrites.FirstOrDefault().FullPath +  ".docx";
+        if (File.Exists(filePath)) 
             File.Delete(filePath);
         using (File.Create(filePath)) { }
         System.Threading.Thread.Sleep(100);
@@ -90,7 +91,7 @@ public class WordFileWriter
                                 p.Append(r9);
                                 // Add your paragraph to docx body
                                 docBody.Append(p);*/
-                foreach (var moduleWrite in moduleWrites)
+                foreach (var moduleWrite in moduleWrites) 
                 {
                     if (moduleWrite == null) continue;
                     docBody.Append(
@@ -118,18 +119,18 @@ public class WordFileWriter
                                     new Justification() { Val = JustificationValues.Both }
                                 ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
                                     new Text("Экзамены: ")
                                 ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
                                     new Text(" " + moduleWrite.Exams)
                                 )
                             )
                         );
                     }
 
-                    if (!string.IsNullOrEmpty(moduleWrite.Receives.Replace(" ", "")))
+                    if (!string.IsNullOrEmpty(moduleWrite.Receives.Replace(" ","")))
                     {
                         docBody.Append(
                             new Paragraph(
@@ -137,11 +138,11 @@ public class WordFileWriter
                                     new Justification() { Val = JustificationValues.Both }
                                 ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
                                     new Text("Зачеты: ")
                                 ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
                                     new Text(" " + moduleWrite.Receives)
                                 )
                             )
@@ -195,6 +196,6 @@ public class WordFileWriter
                 mainPart.Document.Append(docBody);
                 mainPart.Document.Save();
             }
-        }
+        } 
     }
 }

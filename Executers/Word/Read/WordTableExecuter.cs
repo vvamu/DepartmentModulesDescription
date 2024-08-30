@@ -1,7 +1,7 @@
-﻿using ConsoleApp1.Executers.Word.Helpers;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
 using ConsoleApp1.Models;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
+using ConsoleApp1.Executers.Word.Helpers;
 
 namespace ConsoleApp1.Helpers;
 public partial class WordFileReader

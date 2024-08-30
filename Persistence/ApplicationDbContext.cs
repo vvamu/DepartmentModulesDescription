@@ -1,4 +1,8 @@
 ﻿using ConsoleApp1.Models;
+using DocumentFormat.OpenXml.ExtendedProperties;
+using DocumentFormat.OpenXml.Spreadsheet;
+using HarfBuzzSharp;
+using Spire.Doc.AI.Client;
 using SQLite;
 using System.Collections.ObjectModel;
 
@@ -63,5 +67,5 @@ internal static class ApplicationDbContext
 
     }
 
-
+    
 }
