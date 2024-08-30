@@ -51,7 +51,6 @@ public partial class WordExecuter
                     var itemsByExcelFile = ExcelExecuter.GetExcelDataIntoModel(file.FullName);
                     if (itemsByExcelFile == null || itemsByExcelFile.Count() < 1) continue;
                     await wordFileWriter.WriteIntoDocumentAsync(itemsByExcelFile);
-                    return;
                 }
                 catch (Exception ex) { 
                     Console.WriteLine($"Error with file {file.Name}"); }
