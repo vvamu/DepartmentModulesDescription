@@ -34,9 +34,10 @@ public partial class WordExecuter
 
         }
     }
-    public static async Task ProcessDirectoryToWrite()
+    public static async Task ProcessDirectoryToWrite(string path = "")
     {
-        DirectoryInfo dir = new DirectoryInfo(System.IO.Path.Combine(_targetDirectory, "-Готово"));
+
+        DirectoryInfo dir = string.IsNullOrEmpty(path) ? new DirectoryInfo(System.IO.Path.Combine(_targetDirectory, "-Готово")) : new DirectoryInfo(path);
 
         foreach (var file in dir.GetFiles())
         {
