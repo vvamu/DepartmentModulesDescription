@@ -1,21 +1,34 @@
 ﻿using ConsoleApp1.Persistence;
+using Microsoft.Extensions.Configuration;
 
 namespace ConsoleApp1.Helpers;
 
 public static class SettingsHelper
 {
-    private static string _path;
-    public static string Path { get => _path ?? throw new Exception("Path is not set"); set { _path = value; } }
+    public static string Path { 
+        get {
+            var builder = new ConfigurationBuilder();
+            builder.SetBasePath(SettingsHelper.GetProjectPath()).AddJsonFile("appsetting.json", optional: false, reloadOnChange: true);
+            IConfiguration config = builder.Build();
+            return config?.GetSection("Path")?.Value; 
+        } 
+    }
+
+    public static string PathToHandledExcelFiles
+    {
+        get
+        {
+            var builder = new ConfigurationBuilder();
+            builder.SetBasePath(SettingsHelper.GetProjectPath()).AddJsonFile("appsetting.json", optional: false, reloadOnChange: true);
+            IConfiguration config = builder.Build();
+            return config?.GetSection("PathToHandledExcelFiles")?.Value;
+        }
+    }
     public static int CountRows => ApplicationDbContext.SelectAll<Models.Module>().Count();
 
     public static int countUpdatedRows = 0;
 
-    public static void SetGlobalPathToProject()
-    {
-
-    }
-
-    
+   
     public static string GetProjectPath()
     {
         string currentDirectory = Directory.GetCurrentDirectory();

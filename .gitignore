@@ -362,5 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /consoleDb.db
+/appsetting.json
 /Executers/Word/IlyaWord.cs
 /appsetting.json
