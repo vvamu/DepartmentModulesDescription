@@ -6,6 +6,7 @@ using ConsoleApp1.Helpers;
 using ConsoleApp1.Models;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.Extensions.Configuration;
 using System.Configuration;
 
 
@@ -18,11 +19,8 @@ internal class Program
     {
         //GetFilesFromSubfolder("ТДиД");
         //GetFilesFromSubfolder("ФиП");
-
-        SettingsHelper.Path = "D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Каталог учебных дисцилин";
         File.Delete(Path.Combine(path, "ЛПиСПС\\ЛПС_Декоративная дендрология(1).docx"));
-        string value1 = ConfigurationManager.AppSettings["Path"];
-
+       
         #region Word
         var wordExecuter = WordExecuter.getInstance(path);
         var countRowsBefore = SettingsHelper.CountRows;
@@ -44,14 +42,14 @@ internal class Program
         //ExcelExecuter.EditDirSpecialities(Path.Combine(path, "-Готово"));
 
         //ExcelExecuter.GetExcelDataIntoModel(Path.Combine(Path.Combine(path, "-Готово"), "6-05-0211-06 Издательское дело.xlsx"));
-        await WordExecuter.ProcessDirectoryToWrite("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST");
+        await WordExecuter.ProcessDirectoryToWrite();
         #endregion
 
         #region Testing
         //TestingService.PrintAllErrorDocsInDatabaseBySettingsHelper();
         //TestingService.AreEqualsCountFilesInDirectoryAndCountDepartmentsAndCountRowsInDatabase();
         //TestingService.CheckCountDepartments();
-        TestingService.PrintEverythinkHandlingByHands();
+        //TestingService.PrintEverythinkHandlingByHands();
 
         #endregion
     }

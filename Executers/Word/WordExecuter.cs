@@ -49,9 +49,16 @@ public partial class WordExecuter
                     if (itemsByExcelFile == null || itemsByExcelFile.Count() < 1) continue;
                     await wordFileWriter.WriteIntoDocumentAsync(itemsByExcelFile);
                 }
-                catch (Exception ex) { 
-                    Console.WriteLine($"Error with file {file.Name}"); }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error with file {file.Name}");
+                }
+                finally
+                {
+                    Console.WriteLine($"File {file.Name} write data by excel");
+                }
             }
+
 
         }
     }
