@@ -18,11 +18,7 @@ internal class Program
         //GetFilesFromSubfolder("ТДиД");
         //GetFilesFromSubfolder("ФиП");
 
-        ExcelExecuter.EditDirSpecialities("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST");
-        ExcelExecuter.GetExcelDataIntoModel("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST\\6-05-0211-06 Издательское дело.xlsx");
-        return;
-
-        SettingsHelper.Path = "D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Каталог учебных дисцилин";
+        SettingsHelper.Path = "D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин";
         File.Delete(Path.Combine(path, "ЛПиСПС\\ЛПС_Декоративная дендрология(1).docx"));
 
         #region Word
