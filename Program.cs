@@ -7,6 +7,7 @@ using ConsoleApp1.Models;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Wordprocessing;
 
+
 namespace ConsoleApp1;
 
 internal class Program 
@@ -16,6 +17,8 @@ internal class Program
     {
         //GetFilesFromSubfolder("ТДиД");
         //GetFilesFromSubfolder("ФиП");
+
+        ExcelExecuter.EditDirSpecialities("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST");
         ExcelExecuter.GetExcelDataIntoModel("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST\\6-05-0211-06 Издательское дело.xlsx");
         return;
 

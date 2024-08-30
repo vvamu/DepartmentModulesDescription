@@ -192,10 +192,13 @@ internal static class ExcelExecuter
                     if (sheet.Cells["A" + i].Value.ToString().customNormalize().Contains("Курсовая работа".customNormalize())
                         || sheet.Cells["A" + i].Value.ToString().customNormalize().Contains("Курсовой проект".customNormalize()))
                         goto End;
-                    //if (System.Drawing.ColorTranslator.FromHtml(sheet.Cells["AG" + i].Style.Font.Color.LookupColor())
-                    //    == System.Drawing.Color.Red) 
-                    //    goto End;
-                    //Console.WriteLine(System.Drawing.ColorTranslator.FromHtml(sheet.Cells["AG" + i].Style.Font.Color.LookupColor()));
+                    if (System.Drawing.ColorTranslator.FromHtml(sheet.Cells["AI" + i].Style.Font.Color.LookupColor())
+                        == System.Drawing.Color.Red)
+                        goto End;
+
+                    //Console.Write(sheet.Cells["A" + i].Value + " - ");
+                    //Console.WriteLine(sheet.Cells["AI" + i].Style.Font.Color.LookupColor());
+                    //Console.WriteLine(System.Drawing.ColorTranslator.FromHtml(sheet.Cells["AI" + i].Style.Font.Color.LookupColor()));
 
                     ModuleWrite module = new ModuleWrite();
                     module.Name = sheet.Cells["A" + i].Value?.ToString();
