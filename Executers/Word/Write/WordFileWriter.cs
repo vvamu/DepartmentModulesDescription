@@ -109,6 +109,7 @@ public class WordFileWriter
                                 docBody.Append(p);*/
                 foreach (var moduleWrite in moduleWrites) 
                 {
+                    if (moduleWrite == null) continue;
                     docBody.Append(
                         new Paragraph(
                             new ParagraphProperties(
