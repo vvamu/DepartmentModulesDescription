@@ -20,8 +20,10 @@ internal class Program
         //GetFilesFromSubfolder("ФиП");
 
         SettingsHelper.Path = "D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин";
+        SettingsHelper.Path = "D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин";
         File.Delete(Path.Combine(path, "ЛПиСПС\\ЛПС_Декоративная дендрология(1).docx"));
         string value1 = ConfigurationManager.AppSettings["Path"];
+
 
         #region Word
         var wordExecuter = WordExecuter.getInstance(path);

@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /consoleDb.db
 /Executers/Word/IlyaWord.cs
+/appsetting.json
