@@ -25,7 +25,7 @@ internal class Program
         var wordExecuter = WordExecuter.getInstance(path);
         var countRowsBefore = SettingsHelper.CountRows;
 
-        //await WordExecuter.ProcessRootDirectoryToFindOtherFoldersWithFilesToRead();
+        await WordExecuter.ProcessRootDirectoryToFindOtherFoldersWithFilesToRead();
 
         var countRowsAfter = SettingsHelper.CountRows;
 
@@ -49,35 +49,7 @@ internal class Program
         //TestingService.PrintAllErrorDocsInDatabaseBySettingsHelper();
         //TestingService.AreEqualsCountFilesInDirectoryAndCountDepartmentsAndCountRowsInDatabase();
         //TestingService.CheckCountDepartments();
-
-        //Console.WriteLine("");
-        //Console.WriteLine("------------ Изменено: ------------"); 
-        //Console.WriteLine("Файл МТБиУР - Кросс-культурный менеджмент <Коммуникации> - копия.docx перебран руками");
-        //Console.WriteLine("Файл МТБиУР - Международная экологическая экономика <Бизнес-аналитика-2>.docx перебран руками");
-        //Console.WriteLine("Файл РИТ - Моделирование и оптимизация технологических процессов редакционно-издательской деятельности.docx перебран руками");
-        //Console.WriteLine("Файл ТДиД - 2 Транспортые системы и оборудование в деревообработке-1.doc перебран руками");
-        //Console.WriteLine("Файл ТДиД - 9 Проектирование деревообрабатывающих предприятий-1.doc перебран руками");
-        //Console.WriteLine("Папка ФХМОК перебрана руками");
-        //Console.WriteLine("Файл ЛУ - Созданный документ руками.docx создан вместо файл Описание учебных дисциплин кафедры лесоустройства для составления каталога.docx из-за наличия ошибки");
-        //Console.WriteLine("Файл ТИО - Охотоведение и охотничье хозяйство(1).docx не берется в расчет");
-        //Console.WriteLine("Файл ЛПС_Декоративная дендрология(1).docx удален");
-        //Console.WriteLine("------------");
-        //Console.WriteLine("Папка МКиТП содержит данные без описания - перебрана руками");
-        //Console.WriteLine("Папку НГПиНХ перебрана руками");
-        //Console.WriteLine("Папку ТДП перебрана руками");
-        //Console.WriteLine("Папку ЭТИГ перебрана руками");
-        //Console.WriteLine("Папку НГПиНХ перебрана руками");
-        //Console.WriteLine("Папку ПЭ частично перебрана руками");
-        //Console.WriteLine("Папку ПКМ частично перебрана руками");
-
-        var writer = new WordFileWriter();
-        //var info = new ModuleWrite() { FullPath = Path.Combine(Path.Combine(path, "-Готово"), "6-05-0714-08 Промышленный дизайн.xlsx") };
-
-        //await writer.WriteIntoDocumentAsync(info);
-
-
-
-
+        TestingService.PrintEverythinkHandlingByHands();
 
         #endregion
     }
