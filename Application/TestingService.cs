@@ -1,13 +1,7 @@
 ﻿using ConsoleApp1.Helpers;
 using ConsoleApp1.Models;
 using ConsoleApp1.Persistence;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.InkML;
-using DocumentFormat.OpenXml.Spreadsheet;
 using MethodTimer;
-using System.Linq;
 namespace ConsoleApp1.Application;
 
 internal static class TestingService
@@ -15,10 +9,10 @@ internal static class TestingService
     private static IQueryable<Module> _allItems;
     private static IQueryable<Module> AllItems
     {
-        get 
-        { 
-            if(_allItems == null) _allItems = ApplicationDbContext.SelectAll<Models.Module>().AsQueryable(); 
-            return _allItems; 
+        get
+        {
+            if (_allItems == null) _allItems = ApplicationDbContext.SelectAll<Models.Module>().AsQueryable();
+            return _allItems;
         }
     }
     public static void AreEqualsCountFilesInDirectoryAndCountDepartmentsAndCountRowsInDatabase()
@@ -40,7 +34,7 @@ internal static class TestingService
                 string[] fileEntries = Directory.GetFiles(folderName);
                 var departments = AllItems.GroupBy(x => new { x.DepartmentShortName, x.FileName }).Select(x => x.Key.DepartmentShortName).Where(x => x == folder.Name);
                 var rowsInDatabaseByDepartment = AllItems.Where(x => x.FullFilePath != null && x.FullFilePath.Contains(folderName));
-                
+
                 var countFilesInDepartmentFolder = fileEntries.Length;
                 var countDepartments = departments.Count();
                 var countRowsInDatabaseByDepartment = rowsInDatabaseByDepartment.Count();
@@ -54,7 +48,7 @@ internal static class TestingService
                 }
                 if (fileEntries.Length != countRowsInDatabaseByDepartment)
                 {
-                    Console.WriteLine($"Count files in directory {folder.Name}/Count departments/Count rows in database: {countFilesInDepartmentFolder}/{countDepartments}/{countRowsInDatabaseByDepartment}{strNeedToCheck}" );
+                    Console.WriteLine($"Count files in directory {folder.Name}/Count departments/Count rows in database: {countFilesInDepartmentFolder}/{countDepartments}/{countRowsInDatabaseByDepartment}{strNeedToCheck}");
                 }
 
                 if (filesToCheck.Count() != 0)
@@ -64,7 +58,7 @@ internal static class TestingService
                     Console.WriteLine("-----");
                     foreach (var item in filesToCheck)
                     {
-                        
+
                         Console.WriteLine(item);
                     }
                     Console.WriteLine("-----");
@@ -84,17 +78,17 @@ internal static class TestingService
         Console.WriteLine("----------------Error files----------------");
         foreach (var item in items)
         {
-            Console.WriteLine(item.ToString());        
-        }  
+            Console.WriteLine(item.ToString());
+        }
     }
 
     public static void CheckCountDepartments()
     {
-        var items = AllItems.GroupBy(x=>x.DepartmentShortName);
+        var items = AllItems.GroupBy(x => x.DepartmentShortName);
         var listOfDepartmentShortNameInDatabase = items.Select(x => x.Key).ToList();
         var countDepartments = 48;
-        
-        DirectoryInfo dir = new DirectoryInfo(SettingsHelper.Path);    
+
+        DirectoryInfo dir = new DirectoryInfo(SettingsHelper.Path);
         var countFolders = dir.GetDirectories().Count() - 2;
         Console.WriteLine($"Count departments in database/folder/need to be: {items.Count()}/{countFolders}/{countDepartments}; ");
         foreach (var folder in dir.GetDirectories())
