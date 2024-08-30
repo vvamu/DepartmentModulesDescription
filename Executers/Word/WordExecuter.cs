@@ -36,18 +36,24 @@ public partial class WordExecuter
     }
     public static async Task ProcessDirectoryToWrite()
     {
-        DirectoryInfo dir = new DirectoryInfo(_targetDirectory);
+        DirectoryInfo dir = new DirectoryInfo(System.IO.Path.Combine(_targetDirectory, "-Готово"));
 
         foreach (var file in dir.GetFiles())
         {
-            if (Directory.Exists(file.FullName))
-            {
-                //await ProcessFilesByDirectory(folderName);
-                var info = new ModuleWrite();
-                info.FullPath = file.FullName;
-                var wordFileWriter = new WordFileWriter();
-                await wordFileWriter.WriteIntoDocumentAsync(info);
+            
+            var wordFileWriter = new WordFileWriter();
 
+            //if (Directory.Exists(file.FullName))
+            {
+                try
+                {
+                    //await ProcessFilesByDirectory(folderName);
+                    var itemsByExcelFile = ExcelExecuter.GetExcelDataIntoModel(file.FullName);
+                    if (itemsByExcelFile == null || itemsByExcelFile.Count() < 1) continue;
+                    await wordFileWriter.WriteIntoDocumentAsync(itemsByExcelFile);
+                }
+                catch (Exception ex) { 
+                    Console.WriteLine($"Error with file {file.Name}"); }
             }
 
         }

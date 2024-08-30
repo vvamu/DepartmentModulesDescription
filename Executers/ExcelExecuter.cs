@@ -212,6 +212,7 @@ internal static class ExcelExecuter
                     module.ReceivedUnits = sheet.Cells["AH" + i].Value?.ToString();
                     module.Description = sheet.Cells["AI" + i].Value?.ToString();
                     module.FileName = file_name.Replace(".xlsx", "");
+                    module.FullPath = file_path.Replace(".xlsx", "");
 
                     modules.Add(module);
                     

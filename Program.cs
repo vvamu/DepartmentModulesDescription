@@ -16,10 +16,8 @@ internal class Program
     {
         //GetFilesFromSubfolder("ТДиД");
         //GetFilesFromSubfolder("ФиП");
-        ExcelExecuter.GetExcelDataIntoModel("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST\\6-05-0211-06 Издательское дело.xlsx");
-        return;
 
-        SettingsHelper.Path = "D:\\Ilya\\2024\\08\\Project\\Каталог учебных дисцилин";
+        SettingsHelper.Path = "D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Каталог учебных дисцилин";
         File.Delete(Path.Combine(path, "ЛПиСПС\\ЛПС_Декоративная дендрология(1).docx"));
 
         #region Word
@@ -40,7 +38,10 @@ internal class Program
 
         #region Excel
         //ExcelExecuter.EditSpecialityDescriptions("6-05-0211-06 Example.xlsx");
-        //ExcelExecuter.EditDirSpecialities("D:\\Ilya\\2024\\08\\Project\\-Готово_TEST");
+        //ExcelExecuter.EditDirSpecialities(Path.Combine(path, "-Готово"));
+
+        //ExcelExecuter.GetExcelDataIntoModel(Path.Combine(Path.Combine(path, "-Готово"), "6-05-0211-06 Издательское дело.xlsx"));
+        await WordExecuter.ProcessDirectoryToWrite();
         #endregion
 
         #region Testing
@@ -68,20 +69,10 @@ internal class Program
         //Console.WriteLine("Папку ПЭ частично перебрана руками");
         //Console.WriteLine("Папку ПКМ частично перебрана руками");
 
-        Console.WriteLine("------------ Необходимо изменить: ------------");
-        Console.WriteLine("Папка МКиТП содержит данные без описания");
-        Console.WriteLine("Папку НГПиНХ необходимо перебрать руками");
-        Console.WriteLine("Папку ТДП необходимо перебрать руками");
-        Console.WriteLine("Папку ЭТИГ необходимо перебрать руками");
-        Console.WriteLine("Папку НГПиНХ необходимо перебрать руками");
-        Console.WriteLine("Папку ПЭ частично необходимо перебрать руками");
-        Console.WriteLine("Папку ПКМ частично необходимо перебрать руками");
-        Console.WriteLine("Папку ПКМ частично необходимо перебрать руками");
-
         var writer = new WordFileWriter();
-        var info = new ModuleWrite() { FullPath = Path.Combine(Path.Combine(path, "-Готово"), "6-05-0714-08 Промышленный дизайн.xlsx") };
+        //var info = new ModuleWrite() { FullPath = Path.Combine(Path.Combine(path, "-Готово"), "6-05-0714-08 Промышленный дизайн.xlsx") };
 
-        await writer.WriteIntoDocumentAsync(info);
+        //await writer.WriteIntoDocumentAsync(info);
 
 
 
