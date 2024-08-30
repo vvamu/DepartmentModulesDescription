@@ -16,3 +16,11 @@ ExcelExecuter write into every .xlsx file of speaciality description to studied 
 Step 3
 -
 ExcelExecuter read total data from .xlsx and give data to WordFileWriter and it generates output files according to template formatting.
+
+Notes
+-
+appsetting.json
+  
+    Path": "...:\\...\\Univer\\...\\Каталог учебных дисцилин",
+    "PathToHandledExcelFiles": "...:\\...\\Univer\\...\\Каталог учебных дисцилин\\-Готово"
+
