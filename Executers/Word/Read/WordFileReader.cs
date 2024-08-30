@@ -125,6 +125,7 @@ public partial class WordFileReader
         }
         catch (Exception ex)
         {
+            if (filename.Contains("ЛУ")) return;
             Console.WriteLine($"File with incorrect format in method 'HandleTablesByWordFile' - {filename} with error {ex.Message}");
             return;
         }
