@@ -34,12 +34,14 @@ public partial class WordExecuter
 
         }
     }
-    public static async Task ProcessDirectoryToWrite(string path = "")
+    public static async Task ProcessDirectoryToWrite()
     {
-        DirectoryInfo dir = string.IsNullOrEmpty(path) ? new DirectoryInfo(System.IO.Path.Combine(_targetDirectory, "-Готово")) : new DirectoryInfo(path);
+        DirectoryInfo dir = new DirectoryInfo(SettingsHelper.PathToHandledExcelFiles);
         var wordFileWriter = new WordFileWriter();
-
-        foreach (var file in dir.GetFiles())
+        var files = dir.GetFiles();
+        var countNotHandledFiles = 0;
+        
+        foreach (var file in files)
         {
             //if (Directory.Exists(file.FullName))
             {
@@ -52,15 +54,20 @@ public partial class WordExecuter
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error with file {file.Name}");
+                    countNotHandledFiles++;
                 }
                 finally
                 {
-                    Console.WriteLine($"File {file.Name} write data by excel");
+                    if(file.Name.Contains(".docx"))
+                    Console.WriteLine($"WordExecuter : File {file.Name} write data by excel");
                 }
             }
 
 
         }
+        Console.WriteLine("");
+        Console.WriteLine("Results of write into word:");
+        Console.WriteLine($"Count excel files in folder/Count docx files was handled: {files.Count()}/{files.Count() - countNotHandledFiles}");
     }
 
     public static async Task RemoveAllDocsFormattedByDoc()

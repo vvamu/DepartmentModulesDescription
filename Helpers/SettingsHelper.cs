@@ -10,8 +10,19 @@ public static class SettingsHelper
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(SettingsHelper.GetProjectPath()).AddJsonFile("appsetting.json", optional: false, reloadOnChange: true);
             IConfiguration config = builder.Build();
-            return config.GetSection("Path").Value; ;
+            return config?.GetSection("Path")?.Value; 
         } 
+    }
+
+    public static string PathToHandledExcelFiles
+    {
+        get
+        {
+            var builder = new ConfigurationBuilder();
+            builder.SetBasePath(SettingsHelper.GetProjectPath()).AddJsonFile("appsetting.json", optional: false, reloadOnChange: true);
+            IConfiguration config = builder.Build();
+            return config?.GetSection("PathToHandledExcelFiles")?.Value;
+        }
     }
     public static int CountRows => ApplicationDbContext.SelectAll<Models.Module>().Count();
 
