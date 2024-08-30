@@ -1,30 +1,21 @@
 ﻿
 using ConsoleApp1.Models;
 using ConsoleApp1.Persistence;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Microsoft.VisualBasic;
 using OfficeOpenXml;
-using OfficeOpenXml.Drawing.Style.ThreeD;
 using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO.Packaging;
-using System.Linq;
-using System.Text;
 
 namespace ConsoleApp1.Helpers;
 
 internal static class ExcelExecuter
 {
-    public static string GetDigits(this string str) 
+    public static string GetDigits(this string str)
     {
         return new string(str.ToCharArray().Where(c => char.IsDigit(c)).ToArray());
     }
     public static string GetLetters(this string str)
     {
-        return new string(str.ToCharArray().Where(c =>! char.IsDigit(c)).ToArray());
+        return new string(str.ToCharArray().Where(c => !char.IsDigit(c)).ToArray());
     }
 
     public static string? customNormalize(this string? str)
@@ -32,16 +23,16 @@ internal static class ExcelExecuter
         return str?.ToLower().Replace(" ", "").Replace("ё", "е").Replace("*", "").Replace("\n", "");
     }
 
-    public static void EditDirSpecialities(string dir) 
+    public static void EditDirSpecialities(string dir)
     {
         var fileEntries = Directory.GetFiles(dir);
-        foreach (var file in fileEntries) 
+        foreach (var file in fileEntries)
         {
             EditSpecialityDescriptions(file);
         }
     }
 
-    public static void EditSpecialityDescriptions(string file_path) 
+    public static void EditSpecialityDescriptions(string file_path)
     {
         bool chkDepartment = false;
         string file_name = Path.GetFileName(file_path);
@@ -89,10 +80,10 @@ internal static class ExcelExecuter
                     string excel_full_module_name = sheet.Cells["A" + i].Value.ToString();
                     string excel_module_name = sheet.Cells["A" + i].Value.ToString().customNormalize();
                     string excel_department_name = sheet.Cells[department_title_coll + i].Value?.ToString().customNormalize();
-                    
+
                     if (excel_department_name is null) goto End;
                     if (excel_module_name.Contains("Курсовая работа".customNormalize())
-                        || excel_module_name.Contains("Курсовой проект".customNormalize()))          
+                        || excel_module_name.Contains("Курсовой проект".customNormalize()))
                         goto End;
 
                     var excel_modules = excel_full_module_name.Split("/");
@@ -106,10 +97,10 @@ internal static class ExcelExecuter
                     else
                         chkDepartment = false;
 
-                    foreach (var excel_module in excel_modules) 
-                    {                        
+                    foreach (var excel_module in excel_modules)
+                    {
                         IEnumerable<Module> selected_modules = table;
-                        if (!excel_department_name.Contains("/") && !excel_department_name.Contains(",")) 
+                        if (!excel_department_name.Contains("/") && !excel_department_name.Contains(","))
                         {
                             selected_modules = table.Where(m => m.DepartmentShortName.customNormalize().Equals(excel_department_name));
                             if (selected_modules.Count() == 0)
@@ -168,7 +159,7 @@ internal static class ExcelExecuter
     {
         if (file_path.Contains(".docx"))
             return null;
-        
+
         string file_name = Path.GetFileName(file_path);
         try
         {
@@ -188,7 +179,7 @@ internal static class ExcelExecuter
                 while (!sheet.Cells["A" + i].Value?.ToString()
                         .customNormalize()
                         .Contains("Учебные практики".customNormalize())
-                        ?? true) 
+                        ?? true)
                 {
                     if (string.IsNullOrEmpty(sheet.Cells["A" + i].Value?.ToString())) goto End;
                     if (sheet.Cells["AG" + i].Value is null) goto End;
@@ -221,15 +212,15 @@ internal static class ExcelExecuter
                     module.FullPath = file_path.Replace(".xlsx", "");
 
                     modules.Add(module);
-                    
-                    End:
-                        i += 1;
+
+                End:
+                    i += 1;
                 }
 
                 return modules;
             }
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             Console.WriteLine($"Не удалось считать файл {file_name} Excel. Ошибка: {ex.Message}");
             return null;
@@ -239,7 +230,7 @@ internal static class ExcelExecuter
 
     public static void WriteRow(List<Module> modules)
     {
-        
+
 
         var filePath = "D:\\work\\Univer\\Task 1 - Comments of modules (read word and paste into excel)\\Модули-Write\\InsertArrays.xlsx";
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -250,7 +241,7 @@ internal static class ExcelExecuter
 
             #region Styling
 
-            
+
             var cf = sheet.ConditionalFormatting.AddBelowAverage("A1:A10");
             cf.Style.Fill.Style = eDxfFillStyle.PatternFill;
 
@@ -301,7 +292,7 @@ internal static class ExcelExecuter
             for (int i = 2; i < modules.Count; i++)
             {
 
-                sheet.Cells["A" +  i].Value = modules[i].DepartmentShortName;
+                sheet.Cells["A" + i].Value = modules[i].DepartmentShortName;
                 sheet.Cells["B" + i].Value = modules[i].Name;
                 sheet.Cells["C" + i].Value = modules[i].Name;
                 sheet.Cells["D" + i].Value = modules[i].Name;
@@ -316,39 +307,39 @@ internal static class ExcelExecuter
         }
 
 
-           FileInfo fi = new FileInfo(filePath);
-            if (fi.Exists)
+        FileInfo fi = new FileInfo(filePath);
+        if (fi.Exists)
+        {
+            var p = new Process();
+            p.StartInfo = new ProcessStartInfo(filePath)
             {
-                var p = new Process();
-                p.StartInfo = new ProcessStartInfo(filePath)
-                {
-                    UseShellExecute = true
-                };
-                p.Start();
-
-            }
-            else
-            {
-                //file doesn't exist
-            }
-
-            /*
-            var sheet = package.Workbook.Worksheets.Add("Market Report");
-            sheet.Cells["B2"].Value = "Company:";
-            sheet.Cells[2, 3].Value = "Некое имя компании";
-
-            sheet.Cells[8, 2, 8, 4].LoadFromArrays(new object[][] { new[] { "Capitalization", "SharePrice", "Date" } });
-            var row = 9;
-            var column = 2;
-            var items = new List<Module>() { new Module() { Name = "1", Description = "11" }, new Module() { Name = "2", Description = "22" } };
-            foreach (var item in items)
-            {
-                sheet.Cells[row, column].Value = item.Name;
-                sheet.Cells[row, column + 1].Value = item.Description;
-                row++;
-            }
-            */
+                UseShellExecute = true
+            };
+            p.Start();
 
         }
+        else
+        {
+            //file doesn't exist
+        }
+
+        /*
+        var sheet = package.Workbook.Worksheets.Add("Market Report");
+        sheet.Cells["B2"].Value = "Company:";
+        sheet.Cells[2, 3].Value = "Некое имя компании";
+
+        sheet.Cells[8, 2, 8, 4].LoadFromArrays(new object[][] { new[] { "Capitalization", "SharePrice", "Date" } });
+        var row = 9;
+        var column = 2;
+        var items = new List<Module>() { new Module() { Name = "1", Description = "11" }, new Module() { Name = "2", Description = "22" } };
+        foreach (var item in items)
+        {
+            sheet.Cells[row, column].Value = item.Name;
+            sheet.Cells[row, column + 1].Value = item.Description;
+            row++;
+        }
+        */
+
+    }
 
 }

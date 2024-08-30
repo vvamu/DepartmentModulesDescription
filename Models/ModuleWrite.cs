@@ -1,12 +1,9 @@
-﻿using SQLite;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ConsoleApp1.Models;
+﻿namespace ConsoleApp1.Models;
 
 public class ModuleWrite
 {
     public string Name { get; set; } = string.Empty;
-    public string Exams { get ; set; } 
+    public string Exams { get; set; }
 
     public string Receives { get; set; } = string.Empty;
     public string TotalHours { get; set; } = string.Empty;
@@ -36,9 +33,9 @@ public class ModuleWrite
             return false;
 
         Module other = (Module)obj;
-        return Speciality == other.Speciality 
-            &&  Name == other.Name 
-            && DepartmentShortName == other.DepartmentShortName 
+        return Speciality == other.Speciality
+            && Name == other.Name
+            && DepartmentShortName == other.DepartmentShortName
             ;
     }
 

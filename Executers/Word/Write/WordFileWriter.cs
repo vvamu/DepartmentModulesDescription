@@ -1,13 +1,7 @@
-﻿using ConsoleApp1.Helpers;
-using ConsoleApp1.Models;
+﻿using ConsoleApp1.Models;
 using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using Spire.Doc;
-using Spire.Doc.Interface;
-using Break = DocumentFormat.OpenXml.Wordprocessing.Break;
-
 
 namespace ConsoleApp1.Executers.Word.Write;
 
@@ -15,28 +9,17 @@ public class WordFileWriter
 {
     public async Task WriteIntoDocumentAsync(List<ModuleWrite> moduleWrites)
     {
-        var filePath = moduleWrites.FirstOrDefault().FullPath +  ".docx";
-        // Check if the file already exists and delete it if needed
+        var filePath = moduleWrites.FirstOrDefault().FullPath + ".docx";
         if (File.Exists(filePath))
-        {
             File.Delete(filePath);
-        }
-
-        // Create the file and close it immediately
         using (File.Create(filePath)) { }
-
-        // Delay a bit to ensure the file handle is released
         System.Threading.Thread.Sleep(100);
-
 
         using (MemoryStream mem = new MemoryStream())
         {
-            // Create Document
             using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(filePath, WordprocessingDocumentType.Document))
             {
-                // Add a main document part. 
                 MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
-                // Create the document structure and add some text.
                 mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
                 var docBody = new DocumentFormat.OpenXml.Wordprocessing.Body();
                 /*
@@ -107,7 +90,7 @@ public class WordFileWriter
                                 p.Append(r9);
                                 // Add your paragraph to docx body
                                 docBody.Append(p);*/
-                foreach (var moduleWrite in moduleWrites) 
+                foreach (var moduleWrite in moduleWrites)
                 {
                     if (moduleWrite == null) continue;
                     docBody.Append(
@@ -135,18 +118,18 @@ public class WordFileWriter
                                     new Justification() { Val = JustificationValues.Both }
                                 ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
                                     new Text("Экзамены: ")
                                 ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
                                     new Text(" " + moduleWrite.Exams)
                                 )
                             )
                         );
                     }
 
-                    if (!string.IsNullOrEmpty(moduleWrite.Receives.Replace(" ","")))
+                    if (!string.IsNullOrEmpty(moduleWrite.Receives.Replace(" ", "")))
                     {
                         docBody.Append(
                             new Paragraph(
@@ -154,17 +137,16 @@ public class WordFileWriter
                                     new Justification() { Val = JustificationValues.Both }
                                 ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
                                     new Text("Зачеты: ")
                                 ),
                                 new Run(
-                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
+                                    new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
                                     new Text(" " + moduleWrite.Receives)
                                 )
                             )
                         );
                     }
-
 
                     docBody.Append(
                         new Paragraph(
@@ -172,109 +154,47 @@ public class WordFileWriter
                                     new Justification() { Val = JustificationValues.Both }
                                 ),
                             new Run(
-                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
                                 new Text("Всего: ")
                             ),
                             new Run(
-                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
+                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
                                 new Text(" " + $"{moduleWrite?.TotalHours} ч. ({moduleWrite.GetAuditoriumHours}, {moduleWrite.GetLectureHours}, {moduleWrite.GetLabsHours}, {moduleWrite.GetPracticeHours}, {moduleWrite.GetSeminarHours})")
                             )
                         ),
-
                         new Paragraph(
                             new ParagraphProperties(
                                     new Justification() { Val = JustificationValues.Both }
                                 ),
                             new Run(
-                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
+                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
                                 new Text("Описание учебной дисциплины: ")
-                            )                    
-                        ),
-                        new Paragraph(
-                            new ParagraphProperties(
-                                    new Justification() { Val = JustificationValues.Both }
-                                ),
-                            new Run(
-                                new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
-                                new Text(moduleWrite.Description)
                             )
-                        )/*,
-                        new Paragraph(
-                            new Run(
-                                new Break() { Type = BreakValues.Page }
-                            )
-                        )*/
-
-                    // Add more paragraphs following the same structure for other content
+                        )
                     );
+                    if (moduleWrite.Description.Split("\n\n").Count() > 1)
+                    {
+                        foreach (string line in moduleWrite.Description.Split("\n\n"))
+                        {
+                            docBody.Append(
+                               new Paragraph(
+                                   new ParagraphProperties(
+                                           new Justification() { Val = JustificationValues.Both }
+                                       ),
+                                   new Run(
+                                       new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
+
+                                       new Text(line)
+                                   )
+                               )
+                            );
+                        }
+                    }
                 }
-                /*
-                docBody.Append(new Paragraph(new Run
-                    (new Text
-                    (""
-                    ))));*/
+
                 mainPart.Document.Append(docBody);
                 mainPart.Document.Save();
             }
-            //Context.Response.AppendHeader("Content-Disposition", String.Format("attachment;filename=\"0}.docx\"", MyDocxTitle));
-            //mem.Position = 0;
-            //mem.CopyTo(Context.Response.OutputStream);
-            //Context.Response.Flush();
-            //Context.Response.End();
         }
-
-
-        /*
-        ComponentInfo.SetLicense("FREE-LIMITED-KEY");
-
-        var document = new DocumentModel();
-        foreach (var moduleWrite in moduleWrites);
-                wordDocument.Save();
-        {
-            if (moduleWrite == null) continue;
-
-            try
-            {
-                document.Sections.Add(
-                    new Section(document,
-                       
-                        new Paragraph(document,
-                            new Run(document, "Всего: ") { CharacterFormat = { FontName = "Times New Roman", Bold = true, Size = 14 } },
-                            new Run(document, $"{moduleWrite.TotalHours} ".Replace("\n", "").Replace("\r", "")) { CharacterFormat = { FontName = "Times New Roman", Size = 14 } } //({moduleWrite.AuditoriumHours} ауд. ч., {moduleWrite.LectureHours} лекционных ч., {moduleWrite.PracticeHours} практических ч., {moduleWrite.SeminarHours} семинарских ч.)
-                        ),
-                        new Paragraph(document,
-                            new Run(document, "Зачетных единиц: ") { CharacterFormat = { FontName = "Times New Roman", Bold = true, Size = 14 } },
-                            new Run(document, moduleWrite.ReceivedUnits.Replace("\n", "").Replace("\r", "")) { CharacterFormat = { FontName = "Times New Roman", Size = 14 } }
-                        ),
-                        new Paragraph(document,
-                            new Run(document, "Описание учебной дисциплины: ") { CharacterFormat = { FontName = "Times New Roman", Bold = true, Size = 14 } }
-                        ),
-                        new Paragraph(document,
-                            new Run(document, moduleWrite.Description.Replace("\n", "").Replace("\r", "")) { CharacterFormat = { FontName = "Times New Roman", Size = 14 } }
-                        )
-                    )
-                );
-
-                document.Sections.Add(new Section(document));
-
-
-                //// Insert RTF formatted text at the beginning of the document.
-                //var position = document.Content.Start.LoadText(@"{\rtf1\ansi\deff0{\fonttbl{\f0 Arial Black;}}{\colortbl ;\red255\green128\blue64;}\f0\cf1 This is rich formatted text.}",
-                //        LoadOptions.RtfDefault);
-
-                //    // Insert HTML formatted text after the previous text.
-                //    position.LoadText("<p style='font-family:Arial Narrow;color:royalblue;'>This is another rich formatted text.</p>",
-                //        LoadOptions.HtmlDefault);
-
-                //    // Save Word document to file's path.
-            }
-            catch (Exception ex) { 
-                Console.WriteLine(ex.ToString()); }
-            
-        }
-         document.Save(filePath);
-
-
-        */
     }
 }

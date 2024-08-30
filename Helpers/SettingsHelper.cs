@@ -5,13 +5,15 @@ namespace ConsoleApp1.Helpers;
 
 public static class SettingsHelper
 {
-    public static string Path { 
-        get {
+    public static string Path
+    {
+        get
+        {
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(SettingsHelper.GetProjectPath()).AddJsonFile("appsetting.json", optional: false, reloadOnChange: true);
             IConfiguration config = builder.Build();
-            return config?.GetSection("Path")?.Value; 
-        } 
+            return config?.GetSection("Path")?.Value;
+        }
     }
 
     public static string PathToHandledExcelFiles
@@ -28,7 +30,7 @@ public static class SettingsHelper
 
     public static int countUpdatedRows = 0;
 
-   
+
     public static string GetProjectPath()
     {
         string currentDirectory = Directory.GetCurrentDirectory();
@@ -52,7 +54,7 @@ public static class SettingsHelper
         return false;
     }
 
-   
+
 
 
 

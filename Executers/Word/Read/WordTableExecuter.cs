@@ -1,29 +1,9 @@
-﻿using ConsoleApp1.Application;
-using ConsoleApp1.Helpers;
-using ConsoleApp1.Persistence;
-using System.Text;
-
-using DocumentFormat.OpenXml.Packaging;
-
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
-using System.Text;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
-using System.Text.Json;
+﻿using ConsoleApp1.Executers.Word.Helpers;
 using ConsoleApp1.Models;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
-using ConsoleApp1.Application;
-using System.Xml.Linq;
-using DocumentFormat.OpenXml;
-using ConsoleApp1.Executers.Word.Helpers;
 
 namespace ConsoleApp1.Helpers;
-
-
 public partial class WordFileReader
 {
     private async Task<(Module, List<Module>)> ProcessTable(Table node, Module resultModule)
@@ -88,11 +68,8 @@ public partial class WordFileReader
                 {
                     module.Speciality = rowArray[i + 1].InnerText;
                 }
-                //else if (i == rowArray.Count() - 1){}
-
             }
             return module;
-            //ExcelExecuter.WriteRow(new List<Models.Module>());
         }
         return null;
 
