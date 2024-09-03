@@ -204,7 +204,7 @@ internal static class ExcelExecuter
                     //Console.WriteLine(System.Drawing.ColorTranslator.FromHtml(sheet.Cells["AI" + i].Style.Font.Color.LookupColor()));
 
                     ModuleWrite module = new ModuleWrite();
-                    module.Name = sheet.Cells["A" + i].Value?.ToString();
+                    module.Name = sheet.Cells["A" + i].Value?.ToString().Replace("*","");
                     module.Exams = sheet.Cells["Q" + i].Value?.ToString().Replace("/", "");
                     module.Receives = sheet.Cells["S" + i].Value?.ToString().Replace("/", "") +
                                       " " + sheet.Cells["T" + i].Value?.ToString().Replace("/", "");
