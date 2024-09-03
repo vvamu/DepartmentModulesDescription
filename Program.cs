@@ -22,15 +22,16 @@ internal class Program
         var countRowsAfter = SettingsHelper.CountRows;
 
         #endregion
-        CreateSpeacialitiesManually();
-        ModuleService.RemoveRepetitionsRows();
+        //CreateSpeacialitiesManually();
+        //ModuleService.RemoveRepetitionsRows();
+        
         //Console.WriteLine($"Count rows before/after : {countRowsBefore}/{countRowsAfter} ");
         //Console.WriteLine($"Count rows updated: {SettingsHelper.countUpdatedRows}");
 
         #region Excel
         //ExcelExecuter.EditSpecialityDescriptions("6-05-0211-06 Example.xlsx");
-        //ExcelExecuter.EditDirSpecialities(Path.Combine(path, "-Готово"));
-        await WordExecuter.ProcessDirectoryToWrite();
+        ExcelExecuter.EditDirSpecialities(Path.Combine(path, "-Готово"));
+        //await WordExecuter.ProcessDirectoryToWrite();
         #endregion
 
         #region Testing
