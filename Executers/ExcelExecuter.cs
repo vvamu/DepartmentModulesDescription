@@ -205,18 +205,18 @@ internal static class ExcelExecuter
 
                     ModuleWrite module = new ModuleWrite();
                     module.Name = sheet.Cells["A" + i].Value?.ToString();
-                    module.Exams = sheet.Cells["Q" + i].Value?.ToString();
-                    module.Receives = sheet.Cells["S" + i].Value?.ToString() +
-                                      " " + sheet.Cells["T" + i].Value?.ToString();
-                    module.TotalHours = sheet.Cells["U" + i].Value?.ToString();
-                    module.AuditoriumHours = sheet.Cells["W" + i].Value?.ToString();
-                    module.LectureHours = sheet.Cells["Y" + i].Value?.ToString();
-                    module.LabsHours = sheet.Cells["AA" + i].Value?.ToString();
-                    module.PracticeHours = sheet.Cells["AC" + i].Value?.ToString();
-                    module.SeminarHours = sheet.Cells["AE" + i].Value?.ToString();
-                    module.DepartmentShortName = sheet.Cells["AG" + i].Value?.ToString();
-                    module.ReceivedUnits = sheet.Cells["AH" + i].Value?.ToString();
-                    module.Description = sheet.Cells["AI" + i].Value?.ToString();
+                    module.Exams = sheet.Cells["Q" + i].Value?.ToString().Replace("/", "");
+                    module.Receives = sheet.Cells["S" + i].Value?.ToString().Replace("/", "") +
+                                      " " + sheet.Cells["T" + i].Value?.ToString().Replace("/", "");
+                    module.TotalHours = sheet.Cells["U" + i].Value?.ToString().Replace("/", "");
+                    module.AuditoriumHours = sheet.Cells["W" + i].Value?.ToString().Replace("/", "");
+                    module.LectureHours = sheet.Cells["Y" + i].Value?.ToString().Replace("/", "");
+                    module.LabsHours = sheet.Cells["AA" + i].Value?.ToString().Replace("/", "");
+                    module.PracticeHours = sheet.Cells["AC" + i].Value?.ToString().Replace("/", "");
+                    module.SeminarHours = sheet.Cells["AE" + i].Value?.ToString().Replace("/", "");
+                    module.DepartmentShortName = sheet.Cells["AG" + i].Value?.ToString().Replace("/", "");
+                    module.ReceivedUnits = sheet.Cells["AH" + i].Value?.ToString().Replace("/", "");
+                    module.Description = sheet.Cells["AI" + i].Value?.ToString().Replace("/", "");
                     module.FileName = file_name.Replace(".xlsx", "");
                     module.FullPath = file_path.Replace(".xlsx", "");
 
