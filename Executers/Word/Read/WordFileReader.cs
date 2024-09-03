@@ -1,10 +1,25 @@
 ﻿using ConsoleApp1.Application;
-using ConsoleApp1.Models;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Wordprocessing;
+using ConsoleApp1.Helpers;
+using ConsoleApp1.Persistence;
 using System.Text;
-using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
+
+using DocumentFormat.OpenXml.Packaging;
+
+using System.Text;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
+using System.Text.Json;
+using ConsoleApp1.Models;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.InkML;
+using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
+using ConsoleApp1.Application;
+using ConsoleApp1.Executers.Word;
+using System.Xml.Linq;
+using DocumentFormat.OpenXml;
 
 namespace ConsoleApp1.Helpers;
 
@@ -30,7 +45,7 @@ public partial class WordFileReader
 
     public async Task HandleFile(string filePath)
     {
-
+            
         if (!filePath.Contains(".docx") && filePath.Contains(".doc"))
         {
             filePath = ConvertDocToDocx(filePath);
@@ -40,8 +55,8 @@ public partial class WordFileReader
             Console.WriteLine($"File with incorrect format in method 'HandleFile' - {filePath}");
             return;
         }
-        if (ModuleService.IsFileAlreadyExists(filePath)) return;
-
+        if(ModuleService.IsFileAlreadyExists(filePath)) return;
+            
 
         await HandleTablesByWordFile(filePath);
 
@@ -63,7 +78,7 @@ public partial class WordFileReader
             {
 
                 var parts = wDoc.MainDocumentPart.Document.Descendants().FirstOrDefault();
-
+                    
                 Module resultModule = new Module(FolderName, FileName, FullFilePath, IsDocxConvertedByDoc);
                 List<Module> modulesInDifferentTables = new List<Module>();
 
@@ -81,27 +96,27 @@ public partial class WordFileReader
                             var res = await ProcessTable((Table)node, resultModule);
                             modulesInDifferentTables.Add((await ProcessTable((Table)node, new Module(FolderName, FileName, FullFilePath, IsDocxConvertedByDoc))).Item1);
                             resultModule = res.Item1;
-                            if (res.Item2 != null && res.Item2.Count() > 1)
-                                foreach (var item in res.Item2)
+                            if(res.Item2 != null && res.Item2.Count() > 1)
+                                foreach(var item in res.Item2)
                                 {
                                     if (!string.IsNullOrEmpty(item.Name)) ModuleService.Create(item);
                                 }
                             IsTableHandled = true;
                         }
-                        if (((filename.Contains("ДОСИ") || filename.Contains("ТиО") || filename.Contains("ЭиУП"))) && IsTableHandled && node is Paragraph)
+                        if(((filename.Contains("ДОСИ") || filename.Contains("ТиО") || filename.Contains("ЭиУП"))) && IsTableHandled && node is Paragraph)
                         {
                             //fullDescriptionForBrokenFilesStringBuilder.Append(ProcessParagraph((Paragraph)node));
-                            fullDescriptionForBroken += ProcessParagraph((Paragraph)node, true);
+                            fullDescriptionForBroken += ProcessParagraph((Paragraph)node,true);
 
-                        }
+                        }  
                     }
 
-
-                    if (filename.Contains("ТиО") && string.IsNullOrEmpty(fullDescriptionForBroken) && string.IsNullOrEmpty(resultModule.Name))
+                        
+                    if(filename.Contains("ТиО") && string.IsNullOrEmpty(fullDescriptionForBroken) && string.IsNullOrEmpty(resultModule.Name))
                     {
                         resultModule = ProcessFormatInTIO(parts, resultModule);
                     }
-                    if ((filename.Contains("ДОСИ") || filename.Contains("ТиО") || filename.Contains("ЭиУП")) && string.IsNullOrEmpty(resultModule.Description) && !string.IsNullOrEmpty(fullDescriptionForBroken)) resultModule.Description = fullDescriptionForBroken;
+                    if ((filename.Contains("ДОСИ") || filename.Contains("ТиО") || filename.Contains("ЭиУП")) &&  string.IsNullOrEmpty(resultModule.Description) && !string.IsNullOrEmpty(fullDescriptionForBroken)) resultModule.Description = fullDescriptionForBroken;
                     if (modulesInDifferentTables.Count > 0) { foreach (var item in modulesInDifferentTables) ModuleService.Create(item); return; }
                     ModuleService.Create(resultModule);
                 }
@@ -115,7 +130,7 @@ public partial class WordFileReader
         }
     }
 
-    public string ConvertDocToDocx(string docPath, string docxPath = "")
+    public  string ConvertDocToDocx(string docPath, string docxPath = "")
     {
         var document = new Spire.Doc.Document();
 
@@ -126,20 +141,20 @@ public partial class WordFileReader
         IsDocxConvertedByDoc = true;
         return docxPath;
     }
-
+       
     private string ProcessParagraph(Paragraph node, bool isd = true)
     {
         var res = string.Empty;
         foreach (var text in node.Descendants<Text>())
         {
-            res += text.InnerText;
+            res += text.InnerText;        
         }
         return res;
     }
     // :(
     //private IEnumerable<string> ProcessParagraph(Paragraph node)
     //{
-
+            
     //    foreach (var text in node.Descendants<Text>())
     //    {
     //        var ress = text.InnerText;
@@ -158,13 +173,13 @@ public partial class WordFileReader
         }
         int index1 = fullText.IndexOf("Профилизация:", StringComparison.Ordinal);
         int index2 = fullText.IndexOf("Дисциплина ", StringComparison.Ordinal);
-        if (index2 != -1) module.Speciality = ExtractTextBetween(fullText, "Специальность ", "Дисциплина") == "" ? ExtractTextBetween(fullText, "Специальности ", "Дисциплина") : ExtractTextBetween(fullText, "Специальность ", "Дисциплина");
+        if (index2 != -1) module.Speciality = ExtractTextBetween(fullText, "Специальность ", "Дисциплина") == "" ? ExtractTextBetween(fullText, "Специальности ", "Дисциплина") : ExtractTextBetween(fullText, "Специальность ", "Дисциплина"); 
         else module.Speciality = ExtractTextBetween(fullText, "Специальность ", "Профилизация") == "" ? ExtractTextBetween(fullText, "Специальности ", "Профилизация") : ExtractTextBetween(fullText, "Специальность ", "Профилизация");
-
+           
         module.Name = ExtractTextBetween(fullText, "Дисциплина ", "Содержание");
 
         int indexDescription = fullText.IndexOf("Содержание:", StringComparison.Ordinal);
-        if (indexDescription >= 0) module.Description = fullText.Substring(indexDescription + "Содержание:".Length);
+        if (indexDescription >= 0)  module.Description = fullText.Substring(indexDescription + "Содержание:".Length);
 
         return module;
     }

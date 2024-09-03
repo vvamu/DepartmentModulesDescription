@@ -9,19 +9,19 @@ public class Module
     public Guid Id { get; set; } = Guid.NewGuid();
     public string? DepartmentShortName { get; set; }
     public string? Speciality { get; set; }
-
+    
     public string LowerAndTrimSpeciality { get; set; }
 
     public string? Name { get; set; }
 
-    public string? Description { get; set; }
+    public string? Description { get; set; } 
 
-    public string DateLastUpdateFileString { get; set; }
+    public string DateLastUpdateFileString {get;set;}
     [NotMapped]
     public bool IsDocxConvertedByDoc { get; set; }
 
     public string FileName { get; set; }
-    public string FullFilePath { get; set; }
+    public string FullFilePath { get; set; } 
 
     public override string ToString()
     {
@@ -33,9 +33,9 @@ public class Module
             return false;
 
         Module other = (Module)obj;
-        return Speciality == other.Speciality
-            && Name == other.Name
-            && DepartmentShortName == other.DepartmentShortName
+        return Speciality == other.Speciality 
+            &&  Name == other.Name 
+            && DepartmentShortName == other.DepartmentShortName 
             ;
     }
 
@@ -46,7 +46,7 @@ public class Module
     public Module() { }
 
 
-    public Module(string departmentShortName, string speciality, string name, string description, string fullFilePath = "", string fileName = "", bool isDocxConvertedByDoc = false)
+    public Module(string departmentShortName,string speciality, string name, string description,string fullFilePath = "", string fileName = "", bool isDocxConvertedByDoc = false)
     {
         DepartmentShortName = departmentShortName;
         Speciality = speciality;

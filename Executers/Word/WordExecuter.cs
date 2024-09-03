@@ -1,6 +1,8 @@
 ﻿using ConsoleApp1.Executers.Word.Write;
 using ConsoleApp1.Helpers;
+using ConsoleApp1.Models;
 using ConsoleApp1.Persistence;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace ConsoleApp1.Executers.Word;
 
@@ -29,7 +31,7 @@ public partial class WordExecuter
         var wordFileWriter = new WordFileWriter();
         var files = dir.GetFiles();
         var countNotHandledFiles = 0;
-
+        
         foreach (var file in files)
         {
             {
@@ -46,8 +48,8 @@ public partial class WordExecuter
                 }
                 finally
                 {
-                    if (file.Name.Contains(".docx"))
-                        Console.WriteLine($"WordExecuter : File {file.Name} write data by excel");
+                    if(file.Name.Contains(".docx"))
+                    Console.WriteLine($"WordExecuter : File {file.Name} write data by excel");
                 }
             }
         }

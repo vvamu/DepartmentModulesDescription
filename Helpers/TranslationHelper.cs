@@ -1,4 +1,6 @@
-﻿namespace ConsoleApp1.Helpers;
+﻿using System.Reflection;
+
+namespace ConsoleApp1.Helpers;
 
 public static class TranslationHelper
 {
@@ -19,7 +21,7 @@ public static class TranslationHelper
 
     public static async Task<ConsoleApp1.Models.Module> TranslateToRu(ConsoleApp1.Models.Module module)
     {
-
+        
         module.Description = await TranslateToRu(module.Description);
         module.Name = await TranslateToRu(module.Name);
         module.Speciality = await TranslateToRu(module.Speciality);

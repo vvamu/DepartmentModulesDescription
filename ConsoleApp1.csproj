@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".gitignore" />
+    <None Remove="appsetting.json" />
     <None Remove="consoleDb.db" />
   </ItemGroup>
 
@@ -17,7 +19,7 @@
     <PackageReference Include="GTranslatorAPI" Version="1.0.0" />
     <PackageReference Include="MethodTimer.Fody" Version="3.2.2" />
     <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
-    <PackageReference Include="Spire.Doc" Version="12.8.2" />
+    <PackageReference Include="Spire.Doc" Version="12.8.12" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
   </ItemGroup>
 

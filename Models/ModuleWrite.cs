@@ -1,18 +1,21 @@
-﻿namespace ConsoleApp1.Models;
+﻿using SQLite;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ConsoleApp1.Models;
 
 public class ModuleWrite
 {
     public string Name { get; set; } = string.Empty;
-    public string Exams { get; set; }
+    public string Exams { get ; set; } 
 
-    public string Receives { get; set; } = string.Empty;
+    public string Receives { get; set; } = string.Empty; public string GetReceives => Receives.Contains("д") ? Receives.Replace("д", "(дифференцированный зачет)") : Receives;
     public string TotalHours { get; set; } = string.Empty;
-    public string AuditoriumHours { get; set; } = string.Empty; public string GetAuditoriumHours => AuditoriumHours == null ? "0  ауд. ч." : AuditoriumHours + " ауд. ч.";
-    public string LectureHours { get; set; } = string.Empty; public string GetLectureHours => LectureHours == null ? "0 лекционных ч." : LectureHours + " лекционных ч.";
-    public string LabsHours { get; set; } = string.Empty; public string GetLabsHours => LabsHours == null ? "0 лаб. ч." : LabsHours + " лаб. ч.";
+    public string AuditoriumHours { get; set; } = string.Empty; public string GetAuditoriumHours => AuditoriumHours == null ? "" : AuditoriumHours + " ауд. ч.,";
+    public string LectureHours { get; set; } = string.Empty; public string GetLectureHours => LectureHours == null ? "" : LectureHours + " лекционных ч.,";
+    public string LabsHours { get; set; } = string.Empty; public string GetLabsHours => LabsHours == null ? "" : LabsHours + " лаб. ч.,";
 
-    public string PracticeHours { get; set; } = string.Empty; public string GetPracticeHours => PracticeHours == null ? "0  практических ч." : PracticeHours + " практических ч.";
-    public string SeminarHours { get; set; } = string.Empty; public string GetSeminarHours => SeminarHours == null ? "0 семинарских ч." : SeminarHours + " семинарских ч.";
+    public string PracticeHours { get; set; } = string.Empty; public string GetPracticeHours => PracticeHours == null ? "" : PracticeHours + " практических ч.,";
+    public string SeminarHours { get; set; } = string.Empty; public string GetSeminarHours => SeminarHours == null ? "" : SeminarHours + " семинарских ч.";
     public string DepartmentShortName { get; set; } = string.Empty;
 
     public string ReceivedUnits { get; set; } = string.Empty;
@@ -33,9 +36,9 @@ public class ModuleWrite
             return false;
 
         Module other = (Module)obj;
-        return Speciality == other.Speciality
-            && Name == other.Name
-            && DepartmentShortName == other.DepartmentShortName
+        return Speciality == other.Speciality 
+            &&  Name == other.Name 
+            && DepartmentShortName == other.DepartmentShortName 
             ;
     }
 
