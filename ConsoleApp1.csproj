@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".gitignore" />
+    <None Remove="appsetting.json" />
     <None Remove="consoleDb.db" />
   </ItemGroup>
 

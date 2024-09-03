@@ -23,6 +23,7 @@ public class WordFileWriter
                 MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
                 mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
                 var docBody = new DocumentFormat.OpenXml.Wordprocessing.Body();
+                moduleWrites = moduleWrites.DistinctBy(x=>x.Name).ToList();
                 /*
                                 Paragraph p = new Paragraph();
                                 // Run 1
@@ -120,7 +121,7 @@ public class WordFileWriter
                                 ),
                                 new Run(
                                     new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
-                                    new Text("Экзамены: ")
+                                    new Text("Экзамены, в каких семестрах: ")
                                 ),
                                 new Run(
                                     new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
@@ -139,7 +140,7 @@ public class WordFileWriter
                                 ),
                                 new Run(
                                     new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new Bold(), new FontSize() { Val = "28" }),
-                                    new Text("Зачеты: ")
+                                    new Text("Зачеты, в каких семестрах: ")
                                 ),
                                 new Run(
                                     new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman" , EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
@@ -160,7 +161,7 @@ public class WordFileWriter
                             ),
                             new Run(
                                 new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
-                                new Text(" " + $"{moduleWrite?.TotalHours} ч. ({moduleWrite.GetAuditoriumHours}, {moduleWrite.GetLectureHours}, {moduleWrite.GetLabsHours}, {moduleWrite.GetPracticeHours}, {moduleWrite.GetSeminarHours})")
+                                new Text(" " + $"{moduleWrite?.TotalHours} ч. ({moduleWrite.GetAuditoriumHours} {moduleWrite.GetLectureHours} {moduleWrite.GetLabsHours} {moduleWrite.GetPracticeHours} {moduleWrite.GetSeminarHours})")
                             )
                         ),
                         new Paragraph(
