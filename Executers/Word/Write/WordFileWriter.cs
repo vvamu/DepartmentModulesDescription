@@ -161,7 +161,8 @@ public class WordFileWriter
                             ),
                             new Run(
                                 new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
-                                new Text(" " + $"{moduleWrite?.TotalHours} ч. ({moduleWrite.GetAuditoriumHours} {moduleWrite.GetLectureHours} {moduleWrite.GetLabsHours} {moduleWrite.GetPracticeHours} {moduleWrite.GetSeminarHours})".Replace("  ", " ").Replace(" ,",","))
+                                new Text(" " + $"{moduleWrite?.TotalHours} ч. ({moduleWrite.GetAuditoriumHours} {moduleWrite.GetLectureHours} {moduleWrite.GetLabsHours} {moduleWrite.GetPracticeHours} {moduleWrite.GetSeminarHours})"
+                                .Replace("  ", " ").Replace(" ,",",").Replace(", ", ", ").Replace(" )", ",").Replace("( ", "("))
                             )
                         ),
                         new Paragraph(
