@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using ConsoleApp1.Models;
+using SQLite;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ConsoleApp1.Models;
@@ -6,35 +7,41 @@ namespace ConsoleApp1.Models;
 public class ModuleWrite
 {
     public string Name { get; set; } = string.Empty;
-    public string Exams { get ; set; } 
+    public string Exams { get; set; }
 
     public string Receives { get; set; } = string.Empty; public string GetReceives => Receives.ToLower().Contains("д") ? Receives.ToLower().Replace("д", "(дифференцированный зачет)") : Receives;
     public string TotalHours { get; set; } = string.Empty;
-    public string AuditoriumHours { get; set; } = string.Empty; 
-    /*public string GetAuditoriumHours =>
-        string.IsNullOrEmpty(AuditoriumHours) ? "" : AuditoriumHours + " ауд. ч." + 
-        (string.IsNullOrEmpty(LectureHours) 
-            ? string.IsNullOrEmpty(LabsHours) 
-                ? string.IsNullOrEmpty(PracticeHours) 
-                    ? string.IsNullOrEmpty(SeminarHours) ? "" : "," 
-                : ","
-            : ","
-        : ",") ;*/
+    public string AuditoriumHours { get; set; } = string.Empty;
     public string GetAuditoriumHours =>
-       string.IsNullOrEmpty(AuditoriumHours) ? "" : 
-        (AuditoriumHours + " ауд. ч." + ((string.IsNullOrEmpty(LectureHours) && string.IsNullOrEmpty(LabsHours) && string.IsNullOrEmpty(PracticeHours) && string.IsNullOrEmpty(SeminarHours)) ? "" : "," ));
-    public string LectureHours { get; set; } = string.Empty; 
-    public string GetLectureHours => 
-        LectureHours == null ? "" : 
+       string.IsNullOrEmpty(AuditoriumHours) ? "" :
+        (AuditoriumHours + " ауд. ч." + ((string.IsNullOrEmpty(LectureHours) && string.IsNullOrEmpty(LabsHours) && string.IsNullOrEmpty(PracticeHours) && string.IsNullOrEmpty(SeminarHours)) ? "" : ","));
+    public string LectureHours { get; set; } = string.Empty;
+    public string GetLectureHours =>
+        LectureHours == null ? "" :
         (LectureHours + " лекционных ч." + ((string.IsNullOrEmpty(LabsHours) && string.IsNullOrEmpty(PracticeHours) && string.IsNullOrEmpty(SeminarHours)) ? "" : ","));
 
-    public string LabsHours { get; set; } = string.Empty; 
-    public string GetLabsHours => 
-        LabsHours == null ? "" : 
+    public string LabsHours { get; set; } = string.Empty;
+    public string GetLabsHours =>
+        LabsHours == null ? "" :
         (LabsHours + " лаб. ч." + ((string.IsNullOrEmpty(PracticeHours) && string.IsNullOrEmpty(SeminarHours)) ? "" : ","));
 
-    public string PracticeHours { get; set; } = string.Empty; public string GetPracticeHours => PracticeHours == null ? "" : (PracticeHours + " практических ч." + (string.IsNullOrEmpty(SeminarHours) ? "" : ","));
-    public string SeminarHours { get; set; } = string.Empty; public string GetSeminarHours => SeminarHours == null ? "" : SeminarHours + " семинарских ч.";
+    public string PracticeHours { get; set; } = string.Empty; 
+    public string GetPracticeHours => PracticeHours == null ? "" : (PracticeHours + " практических ч." + (string.IsNullOrEmpty(SeminarHours) ? "" : ","));
+    public string SeminarHours { get; set; } = string.Empty; 
+    public string GetSeminarHours => SeminarHours == null ? "" : SeminarHours + " семинарских ч.";
+
+    public string GetResultHours
+    {
+        get
+        {
+
+            var result = $"({GetAuditoriumHours} {GetLectureHours} {GetLabsHours} {GetPracticeHours} {GetSeminarHours})";
+            if(string.IsNullOrEmpty(result.Replace(" ", "").Trim())) return "";
+            result = result.Replace("  ", " ").Replace(" ,", ",").Replace(", ", ", ").Replace(" )", ")").Replace("( ", "(");
+            return result;
+        }
+    }
+
     public string DepartmentShortName { get; set; } = string.Empty;
     public string ReceivedUnits { get; set; } = string.Empty;
 
