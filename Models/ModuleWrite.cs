@@ -10,10 +10,30 @@ public class ModuleWrite
 
     public string Receives { get; set; } = string.Empty; public string GetReceives => Receives.ToLower().Contains("д") ? Receives.ToLower().Replace("д", "(дифференцированный зачет)") : Receives;
     public string TotalHours { get; set; } = string.Empty;
-    public string AuditoriumHours { get; set; } = string.Empty; public string GetAuditoriumHours => AuditoriumHours == null ? "" : AuditoriumHours + " ауд. ч." + (string.IsNullOrEmpty(LectureHours) ? "" : ",");
-    public string LectureHours { get; set; } = string.Empty; public string GetLectureHours => LectureHours == null ? "" : LectureHours + " лекционных ч." + (string.IsNullOrEmpty(LabsHours) ? "" : ",");
-    public string LabsHours { get; set; } = string.Empty; public string GetLabsHours => LabsHours == null ? "" : LabsHours + " лаб. ч." + (string.IsNullOrEmpty(PracticeHours) ? "" : ",");
-    public string PracticeHours { get; set; } = string.Empty; public string GetPracticeHours => PracticeHours == null ? "" : PracticeHours + " практических ч." + (string.IsNullOrEmpty(SeminarHours) ? "" : ",");
+    public string AuditoriumHours { get; set; } = string.Empty; 
+    /*public string GetAuditoriumHours =>
+        string.IsNullOrEmpty(AuditoriumHours) ? "" : AuditoriumHours + " ауд. ч." + 
+        (string.IsNullOrEmpty(LectureHours) 
+            ? string.IsNullOrEmpty(LabsHours) 
+                ? string.IsNullOrEmpty(PracticeHours) 
+                    ? string.IsNullOrEmpty(SeminarHours) ? "" : "," 
+                : ","
+            : ","
+        : ",") ;*/
+    public string GetAuditoriumHours =>
+       string.IsNullOrEmpty(AuditoriumHours) ? "" : 
+        (AuditoriumHours + " ауд. ч." + ((string.IsNullOrEmpty(LectureHours) && string.IsNullOrEmpty(LabsHours) && string.IsNullOrEmpty(PracticeHours) && string.IsNullOrEmpty(SeminarHours)) ? "" : "," ));
+    public string LectureHours { get; set; } = string.Empty; 
+    public string GetLectureHours => 
+        LectureHours == null ? "" : 
+        (LectureHours + " лекционных ч." + ((string.IsNullOrEmpty(LabsHours) && string.IsNullOrEmpty(PracticeHours) && string.IsNullOrEmpty(SeminarHours)) ? "" : ","));
+
+    public string LabsHours { get; set; } = string.Empty; 
+    public string GetLabsHours => 
+        LabsHours == null ? "" : 
+        (LabsHours + " лаб. ч." + ((string.IsNullOrEmpty(PracticeHours) && string.IsNullOrEmpty(SeminarHours)) ? "" : ","));
+
+    public string PracticeHours { get; set; } = string.Empty; public string GetPracticeHours => PracticeHours == null ? "" : (PracticeHours + " практических ч." + (string.IsNullOrEmpty(SeminarHours) ? "" : ","));
     public string SeminarHours { get; set; } = string.Empty; public string GetSeminarHours => SeminarHours == null ? "" : SeminarHours + " семинарских ч.";
     public string DepartmentShortName { get; set; } = string.Empty;
     public string ReceivedUnits { get; set; } = string.Empty;
