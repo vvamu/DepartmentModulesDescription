@@ -37,8 +37,8 @@ internal class Program
 
         #region Excel
         //ExcelExecuter.EditSpecialityDescriptions("6-05-0211-06 Example.xlsx");
-        ExcelExecuter.EditDirSpecialities(Path.Combine(path, "-Готово"));
-        //await WordExecuter.ProcessDirectoryToWrite();
+        //ExcelExecuter.EditDirSpecialities(Path.Combine(path, "-Готово"));
+        await WordExecuter.ProcessDirectoryToWrite();
         #endregion
 
         #region Testing
