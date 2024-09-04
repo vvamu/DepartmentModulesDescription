@@ -216,7 +216,7 @@ internal static class ExcelExecuter
                     module.SeminarHours = sheet.Cells["AE" + i].Value?.ToString().Replace("/", "");
                     module.DepartmentShortName = sheet.Cells["AG" + i].Value?.ToString();
                     module.ReceivedUnits = sheet.Cells["AH" + i].Value?.ToString().Replace("/", "");
-                    module.Description = sheet.Cells["AI" + i].Value?.ToString();
+                    module.Description = sheet.Cells["AI" + i].Value?.ToString().Replace(" ,",",");
                     module.FileName = file_name.Replace(".xlsx", "");
                     module.FullPath = file_path.Replace(".xlsx", "");
 
