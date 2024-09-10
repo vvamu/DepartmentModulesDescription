@@ -11,6 +11,7 @@ public class ModuleWrite
 
     public string Receives { get; set; } = string.Empty; public string GetReceives => Receives.ToLower().Contains("д") ? Receives.ToLower().Replace("д", "(дифференцированный зачет)") : Receives;
     public string TotalHours { get; set; } = string.Empty;
+
     public string AuditoriumHours { get; set; } = string.Empty;
     public string GetAuditoriumHours =>
        string.IsNullOrEmpty(AuditoriumHours) ? "" :
@@ -34,7 +35,6 @@ public class ModuleWrite
     {
         get
         {
-
             var result = $"({GetAuditoriumHours} {GetLectureHours} {GetLabsHours} {GetPracticeHours} {GetSeminarHours})";
             if(string.IsNullOrEmpty(result.Replace(" ", "").Trim())) return "";
             result = result.Replace("  ", " ").Replace(" ,", ",").Replace(", ", ", ").Replace(" )", ")").Replace("( ", "(");

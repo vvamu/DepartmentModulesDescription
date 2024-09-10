@@ -23,6 +23,7 @@ public class WordFileWriter
                 MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
                 mainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
                 var docBody = new DocumentFormat.OpenXml.Wordprocessing.Body();
+                
                 moduleWrites = moduleWrites.DistinctBy(x=>x.Name).ToList();
                 /*
                                 Paragraph p = new Paragraph();
@@ -148,8 +149,9 @@ public class WordFileWriter
                             )
                         );
                     }
-
-                    docBody.Append(
+                    if (!string.IsNullOrEmpty(moduleWrite.TotalHours.Replace(" ", "")) && !string.IsNullOrEmpty(moduleWrite.GetResultHours.Replace(" ", "")))
+                    {
+                        docBody.Append(
                         new Paragraph(
                             new ParagraphProperties(
                                     new Justification() { Val = JustificationValues.Both }
@@ -160,10 +162,13 @@ public class WordFileWriter
                             ),
                             new Run(
                                 new RunProperties(new RunFonts() { ComplexScript = "Times New Roman", Ascii = "Times New Roman", HighAnsi = "Times New Roman", EastAsia = "Times New Roman" }, new FontSize() { Val = "28" }),
-                                new Text($"{moduleWrite?.TotalHours} ч. {moduleWrite?.GetResultHours}"                         
+                                new Text($"{moduleWrite?.TotalHours} ч. {moduleWrite?.GetResultHours}"
                                 )
                             )
-                        ),
+                        ));
+                    }
+                    
+                    docBody.Append(
                         new Paragraph(
                             new ParagraphProperties(
                                     new Justification() { Val = JustificationValues.Both }
